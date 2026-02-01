@@ -1,0 +1,14 @@
+[versions]
+kotlin = "2.3.0"
+kotlinter = "5.4.0"
+jupiter = "6.0.2"
+jvm = "17"
+
+[libraries]
+jupiter-junitJupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "jupiter" }
+kotlin-kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
