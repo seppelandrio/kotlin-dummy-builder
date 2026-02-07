@@ -1,0 +1,22 @@
+name: Auto Create PR
+
+on:
+  push:
+    branches:
+      - merge/*
+
+jobs:
+  create-pr:
+    name: Create PR
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0 # we need the full history to create a PR
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.PAT }} # we need to use a different token here as otherwise the PR workflows won't be triggered
+        run: |
+          gh pr create --fill --base main || exit 0 # Ignore error if PR already exists
+          gh pr merge --auto --rebase
