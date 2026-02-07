@@ -9,8 +9,8 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.stream.Stream
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertTrue
@@ -86,6 +86,20 @@ class KotlinDummyBuilderTest {
             assertEquals(0, d.size)
         }
 
+        @Test
+        fun `should provide dummy for iterables`() {
+            val iterable = dummy<Iterable<String>>()
+
+            assertEquals(0, iterable.toList().size)
+        }
+
+        @Test
+        fun `should provide dummy for collections`() {
+            val collection = dummy<Collection<String>>()
+
+            assertEquals(0, collection.toList().size)
+        }
+
         @TestFactory
         fun `should provide dummy for lists`() = listOf(
             dummy<List<String>>(),
@@ -100,6 +114,13 @@ class KotlinDummyBuilderTest {
             dummy<MutableSet<String>>(),
         ).map { d ->
             assertEquals(0, d.size)
+        }
+
+        @Test
+        fun `should provide dummy for streams`() {
+            val stream = dummy<Stream<String>>()
+
+            assertEquals(0, stream.toList().size)
         }
 
         @TestFactory
