@@ -9,6 +9,11 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.stream.Stream
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
@@ -25,17 +30,22 @@ class KotlinDummyBuilderTest {
             0.toShort() to dummy<Short>(),
             0 to dummy<Int>(),
             0L to dummy<Long>(),
-            BigDecimal.ZERO to dummy<BigDecimal>(),
             0.0 to dummy<Double>(),
             0.0f to dummy<Float>(),
             'a' to dummy<Char>(),
             "" to dummy<String>(),
-            LocalDateTime.of(1970, 1, 1, 0, 0) to dummy<LocalDateTime>(),
+            BigDecimal.ZERO to dummy<BigDecimal>(),
+            LocalDateTime.MIN to dummy<LocalDateTime>(),
+            LocalDate.MIN to dummy<LocalDate>(),
+            LocalTime.MIN to dummy<LocalTime>(),
+            OffsetTime.MIN to dummy<OffsetTime>(),
+            OffsetDateTime.MIN to dummy<OffsetDateTime>(),
+            ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.UTC) to dummy<ZonedDateTime>(),
+            Instant.MIN to dummy<Instant>(),
             Duration.ZERO to dummy<Duration>(),
             kotlin.time.Duration.ZERO to dummy<kotlin.time.Duration>(),
-            LocalDate.of(1970, 1, 1) to dummy<LocalDate>(),
-            Instant.ofEpochSecond(0L) to dummy<Instant>(),
             Int::class to dummy<KClass<Int>>(),
+            String::class.java to dummy<Class<String>>()
         ).map { (expected, actual) ->
             DynamicTest.dynamicTest("${expected::class.simpleName}") {
                 assertEquals(expected, actual)

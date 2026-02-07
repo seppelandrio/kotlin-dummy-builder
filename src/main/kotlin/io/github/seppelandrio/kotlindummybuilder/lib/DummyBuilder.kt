@@ -6,6 +6,11 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.stream.Stream
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -36,15 +41,19 @@ internal fun <T> buildDummy(
         kClass == Short::class -> 0.toShort()
         kClass == Int::class -> 0
         kClass == Long::class -> 0L
-        kClass == BigDecimal::class -> BigDecimal.ZERO
         kClass == Double::class -> 0.0
         kClass == Float::class -> 0.0f
         kClass == Char::class -> 'a'
         kClass == String::class -> ""
-        kClass == LocalDateTime::class -> LocalDateTime.of(1970, 1, 1, 0, 0)
+        kClass == BigDecimal::class -> BigDecimal.ZERO
+        kClass == LocalDateTime::class -> LocalDateTime.MIN
+        kClass == LocalDate::class -> LocalDate.MIN
+        kClass == LocalTime::class -> LocalTime.MIN
+        kClass == OffsetTime::class -> OffsetTime.MIN
+        kClass == OffsetDateTime::class -> OffsetDateTime.MIN
+        kClass == ZonedDateTime::class -> ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.UTC)
+        kClass == Instant::class -> Instant.MIN
         kClass == Duration::class -> Duration.ZERO
-        kClass == LocalDate::class -> LocalDate.of(1970, 1, 1)
-        kClass == Instant::class -> Instant.ofEpochSecond(0L)
         kClass == ByteArray::class -> ByteArray(0)
         kClass == CharArray::class -> CharArray(0)
         kClass == ShortArray::class -> ShortArray(0)
@@ -53,7 +62,8 @@ internal fun <T> buildDummy(
         kClass == FloatArray::class -> FloatArray(0)
         kClass == DoubleArray::class -> DoubleArray(0)
         kClass == BooleanArray::class -> BooleanArray(0)
-        kClass == KClass::class -> checkNotNull(type.arguments.first().type?.classifier) { "Cannot create dummy for $type with unspecified type argument." }
+        kClass == KClass::class -> type.arguments.first().type?.classifier as KClass<*>
+        kClass == Class::class -> (type.arguments.first().type?.classifier as KClass<*>).java
         kClass.java.isEnum -> kClass.java.enumConstants.first()
         kClass.objectInstance != null -> kClass.objectInstance
         kClass.java.isArray -> Array.newInstance((type.arguments.first().type?.classifier as KClass<*>).java, 0)
