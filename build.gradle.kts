@@ -5,7 +5,6 @@ plugins {
 }
 
 group = "io.github.seppelandrio.kotlindummybuilder"
-version = "1.0.0"
 
 kotlin {
     jvmToolchain(
