@@ -1,7 +1,7 @@
 name: Publish
 on:
   release:
-    types: [released, prereleased]
+    types: [released]
 jobs:
   publish:
     name: Release build and publish
@@ -16,7 +16,7 @@ jobs:
           java-version: 17
           cache: gradle
       - name: Publish to MavenCentral
-        run: ./gradlew -Pversion=${{ github.event.release.name }} publishToMavenCentral --no-configuration-cache
+        run: ./gradlew -Pversion=${{ github.event.release.name }} publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
