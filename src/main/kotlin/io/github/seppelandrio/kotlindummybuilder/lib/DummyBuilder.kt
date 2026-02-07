@@ -6,6 +6,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.stream.Stream
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -59,6 +60,7 @@ internal fun <T> buildDummy(
         kClass.isSuperclassOf(MutableList::class) -> mutableListOf<Any?>()
         kClass.isSuperclassOf(MutableSet::class) -> mutableSetOf<Any?>()
         kClass.isSuperclassOf(MutableMap::class) -> mutableMapOf<Any?, Any?>()
+        kClass.isSuperclassOf(Stream::class) -> Stream.empty<Any?>()
         kClass == Function::class || kClass == Function0::class -> ({ buildDummy<Any?>(type.arguments.first().type!!) } as () -> Any?)
         kClass == Function1::class -> ({ _: Any? -> buildDummy<Any?>(type.arguments[1].type!!) } as (Any?) -> Any?)
         kClass == Function2::class -> ({ _: Any?, _: Any? -> buildDummy<Any?>(type.arguments[2].type!!) } as (Any?, Any?) -> Any?)
