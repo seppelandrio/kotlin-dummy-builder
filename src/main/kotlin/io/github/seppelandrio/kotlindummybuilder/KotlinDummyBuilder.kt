@@ -1,11 +1,9 @@
-package de.seppelandrio
+package io.github.seppelandrio.kotlindummybuilder
 
-import de.seppelandrio.lib.TypeReference
-import de.seppelandrio.lib.buildDummy
+import io.github.seppelandrio.kotlindummybuilder.lib.TypeReference
+import io.github.seppelandrio.kotlindummybuilder.lib.buildDummy
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.createType
 
 /**
  * Creates a dummy instance of the specified type [T].

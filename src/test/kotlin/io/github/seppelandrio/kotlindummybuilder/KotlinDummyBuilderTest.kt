@@ -1,4 +1,4 @@
-package de.seppelandrio
+package io.github.seppelandrio.kotlindummybuilder
 
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested

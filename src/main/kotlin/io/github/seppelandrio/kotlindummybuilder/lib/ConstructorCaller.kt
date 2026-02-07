@@ -1,5 +1,6 @@
-package de.seppelandrio.lib
+package io.github.seppelandrio.kotlindummybuilder.lib
 
+import kotlin.collections.get
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType

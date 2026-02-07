@@ -1,4 +1,4 @@
-package de.seppelandrio.lib
+package io.github.seppelandrio.kotlindummybuilder.lib
 
 import java.lang.reflect.Array
 import java.lang.reflect.GenericArrayType
