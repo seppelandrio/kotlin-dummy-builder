@@ -13,8 +13,8 @@ permissions:
   id-token: write
 
 jobs:
-  gradle:
-    name: Gradle
+  test-gradle:
+    name: Test Gradle
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
