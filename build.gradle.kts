@@ -11,10 +11,6 @@ kotlin {
     )
 }
 
-kotlinter {
-    ignoreFormatFailures = false
-}
-
 repositories {
     mavenCentral()
 }
