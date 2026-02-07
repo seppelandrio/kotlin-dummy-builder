@@ -1,0 +1,47 @@
+name: Test
+
+on:
+  merge_group:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  gradle:
+    name: Gradle
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Setup Java
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5
+        with:
+          distribution: corretto
+          java-version: 17
+          cache: gradle
+      - name: Test
+        run: ./gradlew test --no-daemon
+      - name: Create Test Report
+        uses: ctrf-io/github-test-reporter@0d96b539965e08c6f15bc2a25e2dd9e92d15ed5d # v1
+        if: ${{ !cancelled() }}
+        with:
+          report-path: ./**/test-results/**/*.xml
+          github-report: true
+          integrations-config: |
+            {
+              "junit-to-ctrf": {
+                "enabled": true,
+                "action": "convert",
+                "options": {
+                  "output": "./ctrf-reports/ctrf-report.json",
+                  "toolname": "junit-to-ctrf",
+                  "useSuiteName": true
+                }
+              }
+            }

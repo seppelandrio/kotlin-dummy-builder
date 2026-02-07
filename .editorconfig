@@ -8,6 +8,9 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 max_line_length = 200
 
+[*.{yml,yaml}]
+indent_size = 2
+
 [*.{md,adoc}]
 max_line_length = off
 trim_trailing_whitespace = false
