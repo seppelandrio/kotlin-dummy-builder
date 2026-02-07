@@ -25,6 +25,9 @@ internal fun <T> buildDummy(
         else -> throw IllegalArgumentException("Cannot create dummy for type $type as type is not a KClass")
     } as KClass<T & Any>
 
+    fun <S> buildDummy(type: KType): S = buildDummy(type, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+
+    @Suppress("USELESS_CAST")
     return when {
         kClass in typeOverwrites -> typeOverwrites[kClass]
         kClass == Boolean::class -> false
@@ -56,9 +59,12 @@ internal fun <T> buildDummy(
         kClass.isSuperclassOf(MutableList::class) -> mutableListOf<Any?>()
         kClass.isSuperclassOf(MutableSet::class) -> mutableSetOf<Any?>()
         kClass.isSuperclassOf(MutableMap::class) -> mutableMapOf<Any?, Any?>()
-        Function::class.isSuperclassOf(kClass) -> throw IllegalArgumentException("Cannot create dummy for function types: $type.")
-        kClass.isSealed -> buildDummy(kClass.sealedSubclasses.first().createType(), packageNameForChildClassLookup, emptyMap(), typeOverwrites)
-        kClass.isAbstract -> buildDummy(kClass.firstConcreteSubclass(packageNameForChildClassLookup).createType(), packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+        kClass == Function::class || kClass == Function0::class -> ({ buildDummy<Any?>(type.arguments.first().type!!) } as () -> Any?)
+        kClass == Function1::class -> ({ _: Any? -> buildDummy<Any?>(type.arguments[1].type!!) } as (Any?) -> Any?)
+        kClass == Function2::class -> ({ _: Any?, _: Any? -> buildDummy<Any?>(type.arguments[2].type!!) } as (Any?, Any?) -> Any?)
+        Function::class.isSuperclassOf(kClass) -> throw IllegalArgumentException("Cannot create dummy for function type as kotlin does not capture the generic type information: $type.")
+        kClass.isSealed -> buildDummy(kClass.sealedSubclasses.first().createType())
+        kClass.isAbstract -> buildDummy(kClass.firstConcreteSubclass(packageNameForChildClassLookup).createType())
         else -> kClass.callConstructor(type, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
     } as T
 }

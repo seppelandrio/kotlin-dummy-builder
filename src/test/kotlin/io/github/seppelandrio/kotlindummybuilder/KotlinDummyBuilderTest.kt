@@ -10,6 +10,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertTrue
@@ -165,12 +166,57 @@ class KotlinDummyBuilderTest {
 
     @Nested
     inner class FunctionTypes {
+        @TestFactory
+        fun `should be able to generate dummy for function without arguments`() = listOf(
+            Triple("lambda without return type", { dummy<() -> Unit>() }, Unit),
+            Triple("function without return type", { dummy<Function0<Unit>>() }, Unit),
+            Triple("lambda with non null return type", { dummy<() -> String>() }, ""),
+            Triple("function with non null return type", { dummy<Function0<String>>() }, ""),
+            Triple("lambda with nullable return type", { dummy<() -> String?>() }, ""),
+            Triple("function with nullable return type", { dummy<Function0<String?>>() }, ""),
+        ).map { (description, generateDummy, expectedReturnValue) ->
+            DynamicTest.dynamicTest(description) {
+                val d = generateDummy()
+                assertEquals(expectedReturnValue, d())
+            }
+        }
+
+        @TestFactory
+        fun `should be able to generate dummy for function with single argument`() = listOf(
+            Triple("lambda without return type", { dummy<(String) -> Unit>() }, Unit),
+            Triple("function without return type", { dummy<Function1<String, Unit>>() }, Unit),
+            Triple("lambda with non null return type", { dummy<(String) -> String>() }, ""),
+            Triple("function with non null return type", { dummy<Function1<String, String>>() }, ""),
+            Triple("lambda with nullable return type", { dummy<(String) -> String?>() }, ""),
+            Triple("function with nullable return type", { dummy<Function1<String, String?>>() }, ""),
+        ).map { (description, generateDummy, expectedReturnValue) ->
+            DynamicTest.dynamicTest(description) {
+                val d = generateDummy()
+                assertEquals(expectedReturnValue, d("input"))
+            }
+        }
+
+        @TestFactory
+        fun `should be able to generate dummy for function with two arguments`() = listOf(
+            Triple("lambda without return type", { dummy<(String, Int) -> Unit>() }, Unit),
+            Triple("function without return type", { dummy<Function2<String, Int, Unit>>() }, Unit),
+            Triple("lambda with non null return type", { dummy<(String, Int) -> String>() }, ""),
+            Triple("function with non null return type", { dummy<Function2<String, Int, String>>() }, ""),
+            Triple("lambda with nullable return type", { dummy<(String, Int) -> String?>() }, ""),
+            Triple("function with nullable return type", { dummy<Function2<String, Int, String?>>() }, ""),
+        ).map { (description, generateDummy, expectedReturnValue) ->
+            DynamicTest.dynamicTest(description) {
+                val d = generateDummy()
+                assertEquals(expectedReturnValue, d("input", 0))
+            }
+        }
+
         @Test
-        fun `should disallow function types as they can't be stubbed easily`() {
-            val exception = assertFails { dummy<() -> String>() }
+        fun `should not be able to generate dummy for functions with three or more arguments as reflections are not able to provide type arguments anymore for the return value`() {
+            val exception = assertFails { dummy<(Nothing?, Nothing?, Nothing?) -> String>() }
 
             assertTrue(exception is IllegalArgumentException)
-            assertEquals("Cannot create dummy for function types: () -> out kotlin.String.", exception.message)
+            assertEquals("Cannot create dummy for function type as kotlin does not capture the generic type information: kotlin.Function3<*, *, *, *>.", exception.message)
         }
     }
 
