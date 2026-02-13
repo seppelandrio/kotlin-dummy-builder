@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.kotlin.kotlinReflect)
     testImplementation(libs.jupiter.junitJupiter)
     testImplementation(libs.kotlin.kotlinTest)
+    testRuntimeOnly(libs.jupiter.junitPlatformLauncher)
 }
 
 tasks {
