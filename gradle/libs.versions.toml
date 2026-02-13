@@ -1,14 +1,12 @@
 [versions]
-kotlin = "1.9.25"
+kotlin = "2.3.10"
 kotlinter = "5.4.0"
-jupiter = "5.14.2"
-jupiterPlatform = "1.14.2"
+jupiter = "6.0.2"
 jvm = "17"
-maven-publish = "0.35.0"
+maven-publish = "0.36.0"
 
 [libraries]
 jupiter-junitJupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "jupiter" }
-jupiter-junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiterPlatform" }
 kotlin-kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 
