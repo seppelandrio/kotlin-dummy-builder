@@ -207,8 +207,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> fixedAndRandom(
             typeDescription: String,
             expectedFixedValue: T,
-            noinline buildFixedDummy: () -> T = ::fixedDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildFixedDummy: () -> T = { fixedDummy() },
+            noinline buildRandomDummy: () -> T = { randomDummy() },
         ): Array<DynamicTest> = listOf(
             TestCase.FixedValue("$typeDescription: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
             TestCase.RandomValue("$typeDescription: randomDummy() should return return random value", buildRandomDummy),
@@ -221,8 +221,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> alwaysFixed(
             typeDescription: String,
             expectedFixedValue: T,
-            noinline buildFixedDummy: () -> T = ::fixedDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildFixedDummy: () -> T = { fixedDummy() },
+            noinline buildRandomDummy: () -> T = { randomDummy() },
         ): Array<DynamicTest> = listOf(
             TestCase.FixedValue("$typeDescription: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
             TestCase.FixedValue("$typeDescription: randomDummy() should return fixed value", buildRandomDummy, expectedFixedValue),
