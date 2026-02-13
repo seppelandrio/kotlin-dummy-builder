@@ -3,6 +3,9 @@ name: Test
 on:
   merge_group:
   pull_request:
+  push:
+    branches:
+      - kotlin-1.9
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

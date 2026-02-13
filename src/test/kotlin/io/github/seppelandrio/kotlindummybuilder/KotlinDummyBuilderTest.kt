@@ -176,12 +176,12 @@ class KotlinDummyBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> { default<ClassWithInvariantThatCannotBeConstructed>() }
 
         assertEquals(
-            $$"""
-                Failed to create test instance for type class io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed.
+            """
+            Failed to create test instance for type class io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest${"$"}ClassWithInvariantThatCannotBeConstructed.
 
-                The following functions have been tried:
-                - fun `<init>`(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
-                - fun io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed.Companion.of(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed$Companion@23382f76, ""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
+            The following functions have been tried:
+            - fun `<init>`(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
+            - fun io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed.Companion.of(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest${"$"}ClassWithInvariantThatCannotBeConstructed${"$"}Companion@23382f76, ""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
             """.trimIndent().replaceObjectReferences(),
             exception.message?.replaceObjectReferences(),
         )
@@ -267,8 +267,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> defaultAndRandom(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::default,
-            noinline buildRandomDummy: () -> T = ::random,
+            noinline buildDefaultDummy: () -> T = { default() },
+            noinline buildRandomDummy: () -> T = { random() },
         ): Array<DynamicTest> = listOf(
             TestCase.DefaultValue("$typeDescription: default() should return default value", buildDefaultDummy, expectedDefaultValue),
             TestCase.RandomValue("$typeDescription: random() should return return random value", buildRandomDummy),
@@ -281,8 +281,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> alwaysDefault(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::default,
-            noinline buildRandomDummy: () -> T = ::random,
+            noinline buildDefaultDummy: () -> T = { default() },
+            noinline buildRandomDummy: () -> T = { random() },
         ): Array<DynamicTest> = listOf(
             TestCase.DefaultValue("$typeDescription: default() should return default value", buildDefaultDummy, expectedDefaultValue),
             TestCase.DefaultValue("$typeDescription: random() should return default value", buildRandomDummy, expectedDefaultValue),
