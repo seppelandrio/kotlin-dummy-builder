@@ -112,18 +112,22 @@ class KotlinDummyBuilderTest {
 
         @TestFactory
         fun `should provide dummy for lists`() = listOf(
-            dummy<List<String>>(),
-            dummy<MutableList<String>>(),
-        ).map { d ->
-            assertEquals(0, d.size)
+            "immutable" to dummy<List<String>>(),
+            "mutable" to dummy<MutableList<String>>(),
+        ).map { (description, d) ->
+            DynamicTest.dynamicTest(description) {
+                assertEquals(0, d.size)
+            }
         }
 
         @TestFactory
         fun `should provide dummy for sets`() = listOf(
-            dummy<Set<String>>(),
-            dummy<MutableSet<String>>(),
-        ).map { d ->
-            assertEquals(0, d.size)
+            "immutable" to dummy<Set<String>>(),
+            "mutable" to dummy<MutableSet<String>>(),
+        ).map { (description, d) ->
+            DynamicTest.dynamicTest(description) {
+                assertEquals(0, d.size)
+            }
         }
 
         @Test
@@ -135,10 +139,12 @@ class KotlinDummyBuilderTest {
 
         @TestFactory
         fun `should provide dummy for maps`() = listOf(
-            dummy<Map<String, Int>>(),
-            dummy<MutableMap<String, Int>>(),
-        ).map { d ->
-            assertEquals(0, d.size)
+            "immutable"  to dummy<Map<String, Int>>(),
+            "mutable" to dummy<MutableMap<String, Int>>(),
+        ).map { (description, d) ->
+            DynamicTest.dynamicTest(description) {
+                assertEquals(0, d.size)
+            }
         }
     }
 
