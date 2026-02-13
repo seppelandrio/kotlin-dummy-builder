@@ -214,8 +214,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> defaultAndRandom(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::defaultDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildDefaultDummy: () -> T = { defaultDummy() },
+            noinline buildRandomDummy: () -> T = { randomDummy() },
         ): Array<DynamicTest> = listOf(
             TestCase.DefaultValue("$typeDescription: defaultDummy() should return default value", buildDefaultDummy, expectedDefaultValue),
             TestCase.RandomValue("$typeDescription: randomDummy() should return return random value", buildRandomDummy),
@@ -228,8 +228,8 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> alwaysDefault(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::defaultDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildDefaultDummy: () -> T = { defaultDummy() },
+            noinline buildRandomDummy: () -> T = { randomDummy() },
         ): Array<DynamicTest> = listOf(
             TestCase.DefaultValue("$typeDescription: defaultDummy() should return default value", buildDefaultDummy, expectedDefaultValue),
             TestCase.DefaultValue("$typeDescription: randomDummy() should return default value", buildRandomDummy, expectedDefaultValue),
