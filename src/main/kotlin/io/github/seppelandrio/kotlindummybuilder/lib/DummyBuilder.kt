@@ -2,6 +2,7 @@ package io.github.seppelandrio.kotlindummybuilder.lib
 
 import java.lang.reflect.Array
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -9,9 +10,13 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.OffsetTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoField
 import java.util.stream.Stream
+import kotlin.random.Random
+import kotlin.random.nextLong
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -20,63 +25,85 @@ import kotlin.reflect.full.isSuperclassOf
 @Suppress("UNCHECKED_CAST")
 internal fun <T> buildDummy(
     type: KType,
+    randomize: Boolean,
     packageNameForChildClassLookup: String,
     argumentOverwrites: Map<String, Any?>,
     typeOverwrites: Map<KClass<*>, Any>,
 ): T {
-    if (type.isMarkedNullable) return null as T
+    if (type.isMarkedNullable && (!randomize || Random.nextBoolean())) return null as T
 
     val kClass = when (val classifier = type.classifier) {
         is KClass<*> -> classifier
         else -> throw IllegalArgumentException("Cannot create dummy for type $type as type is not a KClass")
     } as KClass<T & Any>
 
-    fun <S> buildDummy(type: KType): S = buildDummy(type, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+    fun <S> buildDummy(type: KType): S = buildDummy(type, randomize, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+    fun <S : Any> buildDummy(clazz: KClass<S>): S = buildDummy(clazz.createType())
+    fun <S : Any> buildDummy(typeReference: TypeReference<S>): S = buildDummy(typeReference.type)
+    fun nextCollectionSizeOr0(): Int = if(randomize) Random.nextInt(0, 100) else 0
+    fun <S> Collection<S>.randomOrFirst(): S = if(randomize) random() else first()
+    fun buildArray(): Any? {
+        val size = nextCollectionSizeOr0()
+        val type = type.argumentType(0)
+        val array = Array.newInstance((type.classifier as KClass<*>).java, size)
+        for (i in 0 until size) {
+            Array.set(array, i, buildDummy(type))
+        }
+        return array
+    }
 
     @Suppress("USELESS_CAST")
     return when {
         kClass in typeOverwrites -> typeOverwrites[kClass]
-        kClass == Boolean::class -> false
-        kClass == Byte::class -> 0.toByte()
-        kClass == Short::class -> 0.toShort()
-        kClass == Int::class -> 0
-        kClass == Long::class -> 0L
-        kClass == Double::class -> 0.0
-        kClass == Float::class -> 0.0f
-        kClass == Char::class -> 'a'
-        kClass == String::class -> ""
-        kClass == BigDecimal::class -> BigDecimal.ZERO
-        kClass == LocalDateTime::class -> LocalDateTime.MIN
-        kClass == LocalDate::class -> LocalDate.MIN
-        kClass == LocalTime::class -> LocalTime.MIN
-        kClass == OffsetTime::class -> OffsetTime.MIN
-        kClass == OffsetDateTime::class -> OffsetDateTime.MIN
-        kClass == ZonedDateTime::class -> ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.UTC)
-        kClass == Instant::class -> Instant.MIN
-        kClass == Duration::class -> Duration.ZERO
-        kClass == ByteArray::class -> ByteArray(0)
-        kClass == CharArray::class -> CharArray(0)
-        kClass == ShortArray::class -> ShortArray(0)
-        kClass == IntArray::class -> IntArray(0)
-        kClass == LongArray::class -> LongArray(0)
-        kClass == FloatArray::class -> FloatArray(0)
-        kClass == DoubleArray::class -> DoubleArray(0)
-        kClass == BooleanArray::class -> BooleanArray(0)
-        kClass == KClass::class -> type.arguments.first().type?.classifier as KClass<*>
-        kClass == Class::class -> (type.arguments.first().type?.classifier as KClass<*>).java
-        kClass.java.isEnum -> kClass.java.enumConstants.first()
+        kClass == Boolean::class -> if (randomize) Random.nextBoolean() else false
+        kClass == Byte::class -> if (randomize) Random.nextBytes(1)[0] else 0.toByte()
+        kClass == Short::class -> if (randomize) Random.nextInt().toShort() else 0.toShort()
+        kClass == Int::class -> if (randomize) Random.nextInt() else 0
+        kClass == Long::class -> if (randomize) Random.nextLong() else 0L
+        kClass == Float::class -> if (randomize) Random.nextFloat() else 0.0f
+        kClass == Double::class -> if (randomize) Random.nextDouble() else 0.0
+        kClass == Char::class -> if (randomize) Random.nextInt(32, 127).toChar() else 'a'
+        kClass == String::class -> buildDummy(object : TypeReference<List<Char>>() {}).joinToString("")
+        kClass == BigInteger::class -> BigInteger.valueOf(buildDummy(Long::class))
+        kClass == BigDecimal::class -> BigDecimal.valueOf(buildDummy(Long::class))
+        kClass == LocalDate::class -> if (randomize) LocalDate.ofYearDay(nextInt(ChronoField.YEAR), nextInt(ChronoField.DAY_OF_YEAR)) else LocalDate.MIN
+        kClass == LocalTime::class -> if (randomize) LocalTime.ofNanoOfDay(nextLong(ChronoField.NANO_OF_DAY)) else LocalTime.MIN
+        kClass == ZoneId::class -> if(randomize) ZoneId.of(ZoneId.getAvailableZoneIds().random()) else ZoneId.of("UTC")
+        kClass == ZoneOffset::class -> if(randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.MAX
+        kClass == Instant::class -> if(randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond .. Instant.MAX.epochSecond), nextLong(ChronoField.NANO_OF_SECOND)) else Instant.MIN
+        kClass == LocalDateTime::class -> LocalDateTime.of(buildDummy(LocalDate::class), buildDummy(LocalTime::class))
+        kClass == OffsetTime::class -> OffsetTime.of(buildDummy(LocalTime::class), buildDummy(ZoneOffset::class))
+        kClass == OffsetDateTime::class -> OffsetDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
+        kClass == ZonedDateTime::class -> ZonedDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
+        kClass == Duration::class -> Duration.ofNanos(buildDummy(Long::class))
+        kClass == KClass::class -> type.argumentType(0).classifier as KClass<*>
+        kClass == Class::class -> (type.argumentType(0).classifier as KClass<*>).java
+        kClass.java.isEnum -> kClass.java.enumConstants.toList().randomOrFirst()
         kClass.objectInstance != null -> kClass.objectInstance
-        kClass.java.isArray -> Array.newInstance((type.arguments.first().type?.classifier as KClass<*>).java, 0)
-        kClass.isSuperclassOf(MutableList::class) -> mutableListOf<Any?>()
-        kClass.isSuperclassOf(MutableSet::class) -> mutableSetOf<Any?>()
-        kClass.isSuperclassOf(MutableMap::class) -> mutableMapOf<Any?, Any?>()
-        kClass.isSuperclassOf(Stream::class) -> Stream.empty<Any?>()
-        kClass == Function::class || kClass == Function0::class -> ({ buildDummy<Any?>(type.arguments.first().type!!) } as () -> Any?)
-        kClass == Function1::class -> ({ _: Any? -> buildDummy<Any?>(type.arguments[1].type!!) } as (Any?) -> Any?)
-        kClass == Function2::class -> ({ _: Any?, _: Any? -> buildDummy<Any?>(type.arguments[2].type!!) } as (Any?, Any?) -> Any?)
+        kClass == ByteArray::class -> ByteArray(nextCollectionSizeOr0()) { buildDummy(Byte::class)}
+        kClass == CharArray::class -> CharArray(nextCollectionSizeOr0()) { buildDummy(Char::class)}
+        kClass == ShortArray::class -> ShortArray(nextCollectionSizeOr0()) { buildDummy(Short::class)}
+        kClass == IntArray::class -> IntArray(nextCollectionSizeOr0()) { buildDummy(Int::class)}
+        kClass == LongArray::class -> LongArray(nextCollectionSizeOr0()) { buildDummy(Long::class)}
+        kClass == FloatArray::class -> FloatArray(nextCollectionSizeOr0()) { buildDummy(Float::class)}
+        kClass == DoubleArray::class -> DoubleArray(nextCollectionSizeOr0()) { buildDummy(Double::class)}
+        kClass == BooleanArray::class -> BooleanArray(nextCollectionSizeOr0()) { buildDummy(Boolean::class)}
+        kClass.java.isArray -> buildArray()
+        kClass.isSuperclassOf(MutableList::class) -> List(nextCollectionSizeOr0()) { buildDummy<Any?>(type.argumentType(0)) }
+        kClass.isSuperclassOf(MutableSet::class) -> HashSet<Any?>().apply { repeat(nextCollectionSizeOr0()) { add(buildDummy(type.argumentType(0))) } }
+        kClass.isSuperclassOf(MutableMap::class) -> HashMap<Any?, Any?>().apply { repeat(nextCollectionSizeOr0()) { put(buildDummy(type.argumentType(0)), buildDummy(type.argumentType(1))) } }
+        kClass.isSuperclassOf(Stream::class) -> Stream.builder<Any?>().apply { repeat(nextCollectionSizeOr0()) { add(buildDummy(type.argumentType(0))) } }.build()
+        kClass == Function::class || kClass == Function0::class -> ({ buildDummy<Any?>(type.argumentType(0)) })
+        kClass == Function1::class -> ({ _: Any? -> buildDummy<Any?>(type.argumentType(1)) }) as (Any?) -> Any?
+        kClass == Function2::class -> ({ _: Any?, _: Any? -> buildDummy<Any?>(type.argumentType(2)) }) as (Any?, Any?) -> Any?
         Function::class.isSuperclassOf(kClass) -> throw IllegalArgumentException("Cannot create dummy for function type as kotlin does not capture the generic type information: $type.")
-        kClass.isSealed -> buildDummy(kClass.sealedSubclasses.first().createType())
-        kClass.isAbstract -> buildDummy(kClass.firstConcreteSubclass(packageNameForChildClassLookup).createType())
-        else -> kClass.callConstructor(type, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
+        kClass.isSealed -> buildDummy(kClass.sealedSubclasses.randomOrFirst())
+        kClass.isAbstract -> buildDummy(kClass.concreteSubclass(packageNameForChildClassLookup, randomize))
+        else -> kClass.callConstructor(type, randomize, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
     } as T
 }
+private fun KType.argumentType(index: Int): KType = arguments[index].type ?: Any::class.createType()
+
+private fun nextLong(chronoField: ChronoField): Long = Random.nextLong(chronoField.range().largestMinimum .. chronoField.range().smallestMaximum)
+
+private fun nextInt(chronoField: ChronoField): Int = nextLong(chronoField).toInt()

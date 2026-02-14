@@ -14,6 +14,7 @@ import kotlin.reflect.jvm.isAccessible
  */
 fun <T : Any> KClass<T>.callConstructor(
     type: KType,
+    randomize: Boolean,
     packageNameForChildClassLookup: String,
     argumentOverwrites: Map<String, Any?>,
     typeOverwrites: Map<KClass<*>, Any>,
@@ -24,7 +25,7 @@ fun <T : Any> KClass<T>.callConstructor(
         ?: throw IllegalArgumentException("Cannot construct test instance for type $type as no constructor matches the provided overwrites: ${argumentOverwrites.keys}")
     constructor.isAccessible = true
     val parameters = constructor.parameters.map { parameter ->
-        argumentOverwrites[parameter.name] ?: buildDummy(parameter.resolvedType(this, type.arguments), packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+        argumentOverwrites[parameter.name] ?: buildDummy(parameter.resolvedType(this, type.arguments), randomize, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
     }
     return try {
         constructor.call(*parameters.toTypedArray())

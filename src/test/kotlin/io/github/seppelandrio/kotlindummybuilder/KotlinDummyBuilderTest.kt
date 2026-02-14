@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -12,245 +13,133 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.OffsetTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.stream.Stream
-import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class KotlinDummyBuilderTest {
-    @Nested
-    inner class SimpleTypes {
-        @TestFactory
-        fun `should provide dummy for simple types`() = listOf(
-            false to dummy<Boolean>(),
-            0.toByte() to dummy<Byte>(),
-            0.toShort() to dummy<Short>(),
-            0 to dummy<Int>(),
-            0L to dummy<Long>(),
-            0.0 to dummy<Double>(),
-            0.0f to dummy<Float>(),
-            'a' to dummy<Char>(),
-            "" to dummy<String>(),
-            BigDecimal.ZERO to dummy<BigDecimal>(),
-            LocalDateTime.MIN to dummy<LocalDateTime>(),
-            LocalDate.MIN to dummy<LocalDate>(),
-            LocalTime.MIN to dummy<LocalTime>(),
-            OffsetTime.MIN to dummy<OffsetTime>(),
-            OffsetDateTime.MIN to dummy<OffsetDateTime>(),
-            ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.UTC) to dummy<ZonedDateTime>(),
-            Instant.MIN to dummy<Instant>(),
-            Duration.ZERO to dummy<Duration>(),
-            kotlin.time.Duration.ZERO to dummy<kotlin.time.Duration>(),
-            Int::class to dummy<KClass<Int>>(),
-            String::class.java to dummy<Class<String>>()
-        ).map { (expected, actual) ->
-            DynamicTest.dynamicTest("${expected::class.simpleName}") {
-                assertEquals(expected, actual)
-            }
-        }
-
-        @TestFactory
-        fun `should provide dummy for ranges`() = listOf(
-            CharRange::class to dummy<CharRange>(),
-            IntRange::class to dummy<IntRange>(),
-            LongRange::class to dummy<LongRange>(),
-        ).map { (clazz, actual) ->
-            DynamicTest.dynamicTest("${clazz.simpleName}") {
-                assertTrue(clazz.isInstance(actual))
-            }
-        }
-
-        @Test
-        fun `should provide dummy for enum`() {
-            val d = dummy<ExampleEnum>()
-
-            assertEquals(ExampleEnum.A, d)
-        }
-    }
-
-    @Nested
-    inner class CollectionTypes {
-        @TestFactory
-        fun `should provide dummy for primitive arrays`() = listOf(
-            ByteArray::class to dummy<ByteArray>(),
-            CharArray::class to dummy<CharArray>(),
-            ShortArray::class to dummy<ShortArray>(),
-            IntArray::class to dummy<IntArray>(),
-            LongArray::class to dummy<LongArray>(),
-            FloatArray::class to dummy<FloatArray>(),
-            DoubleArray::class to dummy<DoubleArray>(),
-            BooleanArray::class to dummy<BooleanArray>(),
-        ).map { (clazz, actual) ->
-            DynamicTest.dynamicTest("${clazz.simpleName}") {
-                assertTrue(clazz.isInstance(actual))
-            }
-        }
-
-        @Test
-        fun `should provide dummy for normal arrays`() {
-            val d = dummy<Array<String>>()
-
-            assertEquals(0, d.size)
-        }
-
-        @Test
-        fun `should provide dummy for iterables`() {
-            val iterable = dummy<Iterable<String>>()
-
-            assertEquals(0, iterable.toList().size)
-        }
-
-        @Test
-        fun `should provide dummy for collections`() {
-            val collection = dummy<Collection<String>>()
-
-            assertEquals(0, collection.toList().size)
-        }
-
-        @TestFactory
-        fun `should provide dummy for lists`() = listOf(
-            "immutable" to dummy<List<String>>(),
-            "mutable" to dummy<MutableList<String>>(),
-        ).map { (description, d) ->
-            DynamicTest.dynamicTest(description) {
-                assertEquals(0, d.size)
-            }
-        }
-
-        @TestFactory
-        fun `should provide dummy for sets`() = listOf(
-            "immutable" to dummy<Set<String>>(),
-            "mutable" to dummy<MutableSet<String>>(),
-        ).map { (description, d) ->
-            DynamicTest.dynamicTest(description) {
-                assertEquals(0, d.size)
-            }
-        }
-
-        @Test
-        fun `should provide dummy for streams`() {
-            val stream = dummy<Stream<String>>()
-
-            assertEquals(0, stream.toList().size)
-        }
-
-        @TestFactory
-        fun `should provide dummy for maps`() = listOf(
-            "immutable"  to dummy<Map<String, Int>>(),
-            "mutable" to dummy<MutableMap<String, Int>>(),
-        ).map { (description, d) ->
-            DynamicTest.dynamicTest(description) {
-                assertEquals(0, d.size)
-            }
-        }
-    }
+    @TestFactory
+    fun `should support`(): List<DynamicTest> = listOf(
+        // region simple types
+        *TestCases.fixedAndRandom("Boolean", false),
+        *TestCases.fixedAndRandom("Byte", 0.toByte()),
+        *TestCases.fixedAndRandom("Short", 0.toShort()),
+        *TestCases.fixedAndRandom("Int", 0),
+        *TestCases.fixedAndRandom("Long", 0L),
+        *TestCases.fixedAndRandom("Float", 0.0f),
+        *TestCases.fixedAndRandom("Double", 0.0),
+        *TestCases.fixedAndRandom("Char", 'a'),
+        *TestCases.fixedAndRandom("String", ""),
+        *TestCases.fixedAndRandom("BigInteger", BigInteger.ZERO),
+        *TestCases.fixedAndRandom("BigDecimal", BigDecimal.ZERO),
+        *TestCases.fixedAndRandom("LocalDate", LocalDate.MIN),
+        *TestCases.fixedAndRandom("LocalTime", LocalTime.MIN),
+        *TestCases.fixedAndRandom("ZoneId", ZoneId.of("UTC")),
+        *TestCases.fixedAndRandom("ZoneOffset", ZoneOffset.MAX),
+        *TestCases.fixedAndRandom("Instant", Instant.MIN),
+        *TestCases.fixedAndRandom("LocalDateTime", LocalDateTime.MIN),
+        *TestCases.fixedAndRandom("OffsetTime", OffsetTime.MIN),
+        *TestCases.fixedAndRandom("OffsetDateTime", OffsetDateTime.MIN),
+        *TestCases.fixedAndRandom("ZonedDateTime", ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.MAX)),
+        *TestCases.fixedAndRandom("Duration", Duration.ZERO),
+        *TestCases.fixedAndRandom("kotlin.time.Duration", kotlin.time.Duration.ZERO),
+        // endregion
+        // region classes
+        *TestCases.alwaysFixed("KClass", Int::class),
+        *TestCases.alwaysFixed("JavaClass", String::class.java),
+        // endregion
+        // region enums
+        *TestCases.fixedAndRandom("Enum", ExampleEnum.A),
+        // endregion
+        // region collections
+        *TestCases.fixedAndRandom("ByteArray", emptyList(), { fixedDummy<ByteArray>().toList() }, { randomDummy<ByteArray>().toList() }),
+        *TestCases.fixedAndRandom("CharArray", emptyList(), { fixedDummy<CharArray>().toList() }, { randomDummy<CharArray>().toList() }),
+        *TestCases.fixedAndRandom("ShortArray", emptyList(), { fixedDummy<ShortArray>().toList() }, { randomDummy<ShortArray>().toList() }),
+        *TestCases.fixedAndRandom("IntArray", emptyList(), { fixedDummy<IntArray>().toList() }, { randomDummy<IntArray>().toList() }),
+        *TestCases.fixedAndRandom("LongArray", emptyList(), { fixedDummy<LongArray>().toList() }, { randomDummy<LongArray>().toList() }),
+        *TestCases.fixedAndRandom("FloatArray", emptyList(), { fixedDummy<FloatArray>().toList() }, { randomDummy<FloatArray>().toList() }),
+        *TestCases.fixedAndRandom("DoubleArray", emptyList(), { fixedDummy<DoubleArray>().toList() }, { randomDummy<DoubleArray>().toList() }),
+        *TestCases.fixedAndRandom("BooleanArray", emptyList(), { fixedDummy<BooleanArray>().toList() }, { randomDummy<BooleanArray>().toList() }),
+        *TestCases.fixedAndRandom("Array<String>", emptyList(), { fixedDummy<Array<String>>().toList() }, { randomDummy<Array<String>>().toList() }),
+        *TestCases.fixedAndRandom("Iterable<String>", emptyList(), { fixedDummy<Iterable<String>>().toList() }, { randomDummy<Iterable<String>>().toList() }),
+        *TestCases.fixedAndRandom("Collection<String>", emptyList(), { fixedDummy<Collection<String>>().toList() }, { randomDummy<Collection<String>>().toList() }),
+        *TestCases.fixedAndRandom("List<String>", emptyList(), { fixedDummy<List<String>>() }, { randomDummy<List<String>>() }),
+        *TestCases.fixedAndRandom("MutableList<String>", emptyList(), { fixedDummy<MutableList<String>>() }, { randomDummy<MutableList<String>>() }),
+        *TestCases.fixedAndRandom("Set<String>", emptySet(), { fixedDummy<Set<String>>() }, { randomDummy<Set<String>>() }),
+        *TestCases.fixedAndRandom("MutableSet<String>", emptySet(), { fixedDummy<MutableSet<String>>() }, { randomDummy<MutableSet<String>>() }),
+        *TestCases.fixedAndRandom("Stream<String>", emptyList(), { fixedDummy<Stream<String>>().toList() }, { randomDummy<Stream<String>>().toList() }),
+        *TestCases.fixedAndRandom("Map<String, Int>", emptyList(), { fixedDummy<Map<String, Int>>().entries.toList() }, { randomDummy<Map<String, Int>>().entries.toList() }),
+        *TestCases.fixedAndRandom("MutableMap<String, Int>", emptyList(), { fixedDummy<MutableMap<String, Int>>().entries.toList() }, { randomDummy<MutableMap<String, Int>>().entries.toList() }),
+        // endregion
+        // region functions
+        *TestCases.alwaysFixed("lambda () -> Unit", Unit, { fixedDummy<() -> Unit>()() }, { randomDummy<() -> Unit>()() }),
+        *TestCases.alwaysFixed("function () -> Unit", Unit, { fixedDummy<Function0<Unit>>()() }, { randomDummy<Function0<Unit>>()() }),
+        *TestCases.fixedAndRandom("lambda () -> String", "", { fixedDummy<() -> String>()() }, { randomDummy<() -> String>()() }),
+        *TestCases.fixedAndRandom("function () -> String", "", { fixedDummy<Function0<String>>()() }, { randomDummy<Function0<String>>()() }),
+        *TestCases.fixedAndRandom("lambda () -> String?", "", { fixedDummy<() -> String?>()()!! }, { randomDummy<() -> String?>()()!! }),
+        *TestCases.fixedAndRandom("function () -> String?", "", { fixedDummy<Function0<String?>>()()!! }, { randomDummy<Function0<String?>>()()!! }),
+        *TestCases.alwaysFixed("lambda (String) -> Unit", Unit, { fixedDummy<(String) -> Unit>()("input") }, { randomDummy<(String) -> Unit>()("input") }),
+        *TestCases.alwaysFixed("function (String) -> Unit", Unit, { fixedDummy<Function1<String, Unit>>()("input") }, { randomDummy<Function1<String, Unit>>()("input") }),
+        *TestCases.fixedAndRandom("lambda (String) -> String", "", { fixedDummy<(String) -> String>()("input") }, { randomDummy<(String) -> String>()("input") }),
+        *TestCases.fixedAndRandom("function (String) -> String", "", { fixedDummy<Function1<String, String>>()("input") }, { randomDummy<Function1<String, String>>()("input") }),
+        *TestCases.fixedAndRandom("lambda (String) -> String?", "", { fixedDummy<(String) -> String?>()("input")!! }, { randomDummy<(String) -> String?>()("input")!! }),
+        *TestCases.fixedAndRandom("function (String) -> String?", "", { fixedDummy<Function1<String, String?>>()("input")!! }, { randomDummy<Function1<String, String?>>()("input")!! }),
+        *TestCases.alwaysFixed("lambda (String, Int?) -> Unit", Unit, { fixedDummy<(String, Int?) -> Unit>()("input", null) }, { randomDummy<(String, Int?) -> Unit>()("input", null) }),
+        *TestCases.alwaysFixed(
+            typeDescription = "function (String, Int?) -> Unit",
+            expectedFixedValue = Unit,
+            buildFixedDummy = { fixedDummy<Function2<String, Int?, Unit>>()("input", null) },
+            buildRandomDummy = { randomDummy<Function2<String, Int?, Unit>>()("input", null) },
+        ),
+        *TestCases.fixedAndRandom("lambda (String, Int?) -> String", "", { fixedDummy<(String, Int?) -> String>()("input", null) }, { randomDummy<(String, Int?) -> String>()("input", null) }),
+        *TestCases.fixedAndRandom(
+            typeDescription = "function (String, Int?) -> String",
+            expectedFixedValue = "",
+            buildFixedDummy = { fixedDummy<Function2<String, Int?, String>>()("input", null) },
+            buildRandomDummy = { randomDummy<Function2<String, Int?, String>>()("input", null) },
+        ),
+        *TestCases.fixedAndRandom("lambda (String, Int?) -> String?", "", { fixedDummy<(String, Int?) -> String?>()("input", null)!! }, { randomDummy<(String, Int?) -> String?>()("input", null)!! }),
+        *TestCases.fixedAndRandom(
+            typeDescription = "function (String, Int?) -> String?",
+            expectedFixedValue = "",
+            buildFixedDummy = { fixedDummy<Function2<String, Int?, String?>>()("input", null)!! },
+            buildRandomDummy = { randomDummy<Function2<String, Int?, String?>>()("input", null)!! },
+        ),
+        // endregion
+        // region complex objects
+        *TestCases.fixedAndRandom("ValueClass", ValueClass("")),
+        *TestCases.fixedAndRandom("Clazz", Clazz("", null, Clazz.Nested(""))),
+        *TestCases.fixedAndRandom("DataClass", DataClass("", null, DataClass.Nested(false))),
+        *TestCases.fixedAndRandom("GenericClass", GenericClass(GenericClass.Nested(""), GenericClass.Nested(0))),
+        *TestCases.fixedAndRandom("ClassWithPrivateConstructor", "", { fixedDummy<ClassWithPrivateConstructor>().s }, { randomDummy<ClassWithPrivateConstructor>().s }),
+        *TestCases.alwaysFixed("Object", Object),
+        // endregion
+        // region abstract types
+        *TestCases.fixedAndRandom("Interface", Interface.Impl1(s = "")),
+        *TestCases.fixedAndRandom("SealedInterface", SealedInterface.Impl1(s = "")),
+        *TestCases.fixedAndRandom("AbstractClass", AbstractClass.Impl1(s = "")),
+        *TestCases.fixedAndRandom("SealedClass", SealedClass.Impl1(s = "")),
+        // endregion
+    )
 
     @Nested
-    inner class ObjectTypes {
+    inner class FunctionsWithMoreThanTwoArguments {
         @Test
-        fun `should provide dummy for value class`() {
-            val d = dummy<ExampleValueClass>()
+        fun `should not be able to generate fixed dummy as reflections are not able to provide type arguments anymore for the return value`() {
+            val exception = assertFails { fixedDummy<(Nothing?, Nothing?, Nothing?) -> String>() }
 
-            assertEquals(ExampleValueClass(""), d)
-        }
-
-        @Test
-        fun `should provide dummy for regular class`() {
-            val d = dummy<ExampleClass>()
-
-            assertEquals("", d.s)
-            assertEquals(null, d.i)
-            assertEquals("", d.n.s)
+            assertTrue(exception is IllegalArgumentException)
+            assertEquals("Cannot create dummy for function type as kotlin does not capture the generic type information: kotlin.Function3<*, *, *, *>.", exception.message)
         }
 
         @Test
-        fun `should provide dummy for data class`() {
-            val d = dummy<ExampleDataClass>()
-
-            assertEquals(ExampleDataClass("", null, ExampleDataClass.Nested(false)), d)
-        }
-
-        @Test
-        fun `should provide dummy for class with private constructor`() {
-            val d = dummy<ExampleClassWithPrivateConstructor>()
-
-            assertEquals("", d.s)
-        }
-
-        @Test
-        fun `should provide dummy for object`() {
-            val d = dummy<ExampleObject>()
-
-            assertEquals(ExampleObject, d)
-        }
-
-        @Test
-        fun `should provide dummy for generic class`() {
-            val d = dummy<ExampleGenericDataClass<ExampleGenericDataClass.Nested<String>>>()
-
-            assertEquals(
-                expected = ExampleGenericDataClass(
-                    t = ExampleGenericDataClass.Nested(v = ""),
-                    n = ExampleGenericDataClass.Nested(v = 0),
-                ),
-                actual = d,
-            )
-        }
-    }
-
-    @Nested
-    inner class FunctionTypes {
-        @TestFactory
-        fun `should be able to generate dummy for function without arguments`() = listOf(
-            Triple("lambda without return type", { dummy<() -> Unit>() }, Unit),
-            Triple("function without return type", { dummy<Function0<Unit>>() }, Unit),
-            Triple("lambda with non null return type", { dummy<() -> String>() }, ""),
-            Triple("function with non null return type", { dummy<Function0<String>>() }, ""),
-            Triple("lambda with nullable return type", { dummy<() -> String?>() }, ""),
-            Triple("function with nullable return type", { dummy<Function0<String?>>() }, ""),
-        ).map { (description, generateDummy, expectedReturnValue) ->
-            DynamicTest.dynamicTest(description) {
-                val d = generateDummy()
-                assertEquals(expectedReturnValue, d())
-            }
-        }
-
-        @TestFactory
-        fun `should be able to generate dummy for function with single argument`() = listOf(
-            Triple("lambda without return type", { dummy<(String) -> Unit>() }, Unit),
-            Triple("function without return type", { dummy<Function1<String, Unit>>() }, Unit),
-            Triple("lambda with non null return type", { dummy<(String) -> String>() }, ""),
-            Triple("function with non null return type", { dummy<Function1<String, String>>() }, ""),
-            Triple("lambda with nullable return type", { dummy<(String) -> String?>() }, ""),
-            Triple("function with nullable return type", { dummy<Function1<String, String?>>() }, ""),
-        ).map { (description, generateDummy, expectedReturnValue) ->
-            DynamicTest.dynamicTest(description) {
-                val d = generateDummy()
-                assertEquals(expectedReturnValue, d("input"))
-            }
-        }
-
-        @TestFactory
-        fun `should be able to generate dummy for function with two arguments`() = listOf(
-            Triple("lambda without return type", { dummy<(String, Int) -> Unit>() }, Unit),
-            Triple("function without return type", { dummy<Function2<String, Int, Unit>>() }, Unit),
-            Triple("lambda with non null return type", { dummy<(String, Int) -> String>() }, ""),
-            Triple("function with non null return type", { dummy<Function2<String, Int, String>>() }, ""),
-            Triple("lambda with nullable return type", { dummy<(String, Int) -> String?>() }, ""),
-            Triple("function with nullable return type", { dummy<Function2<String, Int, String?>>() }, ""),
-        ).map { (description, generateDummy, expectedReturnValue) ->
-            DynamicTest.dynamicTest(description) {
-                val d = generateDummy()
-                assertEquals(expectedReturnValue, d("input", 0))
-            }
-        }
-
-        @Test
-        fun `should not be able to generate dummy for functions with three or more arguments as reflections are not able to provide type arguments anymore for the return value`() {
-            val exception = assertFails { dummy<(Nothing?, Nothing?, Nothing?) -> String>() }
+        fun `should not be able to generate random dummy as reflections are not able to provide type arguments anymore for the return value`() {
+            val exception = assertFails { randomDummy<(Nothing?, Nothing?, Nothing?) -> String>() }
 
             assertTrue(exception is IllegalArgumentException)
             assertEquals("Cannot create dummy for function type as kotlin does not capture the generic type information: kotlin.Function3<*, *, *, *>.", exception.message)
@@ -258,60 +147,122 @@ class KotlinDummyBuilderTest {
     }
 
     @Nested
-    inner class AbstractTypes {
-        @Test
-        fun `should provide dummy for interface`() {
-            val d = dummy<ExampleInterface>()
+    inner class Overwrites {
+        @Nested
+        inner class Arguments {
+            @Test
+            fun `should apply overwrite to fixed dummy`() {
+                val d = fixedDummy<Clazz>(
+                    argumentOverwrites = setOf(
+                        ArgumentOverwrite(Clazz::s, "overwritten"),
+                    ),
+                )
 
-            assertEquals(ExampleInterface.Impl(s = ""), d)
+                assertEquals("overwritten", d.s)
+                assertEquals("", d.n.s)
+            }
+
+            @Test
+            fun `should apply overwrite to random dummy`() {
+                val d = randomDummy<Clazz>(
+                    argumentOverwrites = setOf(
+                        ArgumentOverwrite(Clazz::s, "overwritten"),
+                    ),
+                )
+
+                assertEquals("overwritten", d.s)
+                assertNotEquals("overwritten", d.n.s)
+            }
         }
 
-        @Test
-        fun `should provide dummy for sealed interface`() {
-            val d = dummy<ExampleSealedInterface>()
+        @Nested
+        inner class Types {
+            @Test
+            fun `should apply overwrite to fixed dummy`() {
+                val d = fixedDummy<Clazz>(
+                    typeOverwrites = setOf(
+                        TypeOverwrite(String::class, "overwritten"),
+                    ),
+                )
 
-            assertEquals(ExampleSealedInterface.Impl(s = ""), d)
-        }
+                assertEquals("overwritten", d.s)
+                assertEquals("overwritten", d.n.s)
+            }
 
-        @Test
-        fun `should provide dummy for abstract class`() {
-            val d = dummy<ExampleAbstractClass>()
+            @Test
+            fun `should apply overwrite to random dummy`() {
+                val d = randomDummy<Clazz>(
+                    typeOverwrites = setOf(
+                        TypeOverwrite(String::class, "overwritten"),
+                    ),
+                )
 
-            assertEquals(ExampleAbstractClass.Impl(s = ""), d)
-        }
-
-        @Test
-        fun `should provide dummy for sealed class`() {
-            val d = dummy<ExampleSealedClass>()
-
-            assertEquals(ExampleSealedClass.Impl(s = ""), d)
+                assertEquals("overwritten", d.s)
+                assertEquals("overwritten", d.n.s)
+            }
         }
     }
 
-    @Nested
-    inner class Overwrites {
-        @Test
-        fun `should apply argument overwrite`() {
-            val d = dummy<ExampleClass>(
-                argumentOverwrites = setOf(
-                    ArgumentOverwrite(ExampleClass::s, "overwritten"),
-                ),
-            )
+    private object TestCases {
+        inline fun <reified T : Any> fixedAndRandom(
+            typeDescription: String,
+            expectedFixedValue: T,
+            noinline buildFixedDummy: () -> T = ::fixedDummy,
+            noinline buildRandomDummy: () -> T = ::randomDummy,
+        ): Array<DynamicTest> = listOf(
+            TestCase.FixedValue("${typeDescription}: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
+            TestCase.RandomValue("${typeDescription}: randomDummy() should return return random value", buildRandomDummy),
+        ).map {
+            DynamicTest.dynamicTest(it.description) {
+                it.execute()
+            }
+        }.toTypedArray()
 
-            assertEquals("overwritten", d.s)
-            assertEquals("", d.n.s)
-        }
+        inline fun <reified T : Any> alwaysFixed(
+            typeDescription: String,
+            expectedFixedValue: T,
+            noinline buildFixedDummy: () -> T = ::fixedDummy,
+            noinline buildRandomDummy: () -> T = ::randomDummy,
+        ): Array<DynamicTest> = listOf(
+            TestCase.FixedValue("${typeDescription}: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
+            TestCase.FixedValue("${typeDescription}: randomDummy() should return fixed value", buildRandomDummy, expectedFixedValue),
+        ).map {
+            DynamicTest.dynamicTest(it.description) {
+                it.execute()
+            }
+        }.toTypedArray()
 
-        @Test
-        fun `should apply type overwrite`() {
-            val d = dummy<ExampleClass>(
-                typeOverwrites = setOf(
-                    TypeOverwrite(String::class, "overwritten"),
-                ),
-            )
+        private sealed interface TestCase<T : Any> {
+            val description: String
 
-            assertEquals("overwritten", d.s)
-            assertEquals("overwritten", d.n.s)
+            fun execute()
+
+            class FixedValue<T : Any>(
+                override val description: String,
+                private val buildDummy: () -> T,
+                private val expected: T,
+            ) : TestCase<T> {
+                override fun execute() {
+                    val d = buildDummy()
+                    assertEquals(expected, d)
+                }
+            }
+
+            class RandomValue<T : Any>(
+                override val description: String,
+                private val buildDummy: () -> T,
+            ) : TestCase<T> {
+                override fun execute() {
+                    val dummies = mutableSetOf<T>()
+                    @Suppress("unused")
+                    for (i in 0 until 10000) {
+                        dummies += buildDummy()
+                        if (dummies.size > 1) break
+                    }
+
+                    assertEquals(2, dummies.size, "Expected to get different values when generating random dummy, but got $dummies")
+                }
+            }
         }
     }
 
@@ -319,57 +270,78 @@ class KotlinDummyBuilderTest {
     enum class ExampleEnum { A, B }
 
     @JvmInline
-    value class ExampleValueClass(val a: String)
+    value class ValueClass(val a: String)
 
-    class ExampleClass(
+    class Clazz(
         val s: String,
         val i: Int?,
-        val n: ExampleClass.Nested,
+        val n: Clazz.Nested,
     ) {
-        class Nested(val s: String)
+        override fun equals(other: Any?) = other is Clazz && s == other.s && i == other.i && n == other.n
+        override fun hashCode() = 31 * s.hashCode() + 31 * (i?.hashCode() ?: 0) + n.hashCode()
+
+        class Nested(val s: String) {
+            override fun equals(other: Any?) = other is Nested && s == other.s
+            override fun hashCode() = s.hashCode()
+        }
     }
 
-    data class ExampleDataClass(
+    data class DataClass(
         val s: String,
         val i: Int?,
-        val n: ExampleDataClass.Nested,
+        val n: DataClass.Nested,
     ) {
         data class Nested(val b: Boolean)
     }
 
-    class ExampleClassWithPrivateConstructor private constructor(val s: String)
+    class ClassWithPrivateConstructor private constructor(val s: String) {
+        override fun equals(other: Any?) = other is ClassWithPrivateConstructor && s == other.s
+        override fun hashCode() = s.hashCode()
+    }
 
-    object ExampleObject
+    object Object
 
-    data class ExampleGenericDataClass<T>(
+    data class GenericClass<T>(
         val t: T,
         val n: Nested<Int>,
     ) {
         data class Nested<V>(val v: V)
     }
 
-    interface ExampleInterface {
+    interface Interface {
         val s: String
 
-        data class Impl(override val s: String) : ExampleInterface
+        data class Impl1(override val s: String) : Interface
+
+        @Suppress("unused")
+        data class Impl2(override val s: String) : Interface
     }
 
-    sealed interface ExampleSealedInterface {
+    sealed interface SealedInterface {
         val s: String
 
-        data class Impl(override val s: String) : ExampleSealedInterface
+        data class Impl1(override val s: String) : SealedInterface
+
+        @Suppress("unused")
+        data class Impl2(override val s: String) : SealedInterface
     }
 
-    abstract class ExampleAbstractClass {
+    abstract class AbstractClass {
         abstract val s: String
 
-        data class Impl(override val s: String) : ExampleAbstractClass()
+        data class Impl1(override val s: String) : AbstractClass()
+
+        @Suppress("unused")
+        data class Impl2(override val s: String) : AbstractClass()
     }
 
-    sealed class ExampleSealedClass {
+    sealed class SealedClass {
         abstract val s: String
 
-        data class Impl(override val s: String) : ExampleSealedClass()
+        data class Impl1(override val s: String) : SealedClass()
+
+        @Suppress("unused")
+        data class Impl2(override val s: String) : SealedClass()
     }
     // endregion
 }
