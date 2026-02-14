@@ -13,8 +13,11 @@ import kotlin.reflect.full.superclasses
  * @return If randomize is false, the first concrete subclass sorted by qualified name of this [KClass] found in the specified package. If randomize is true, a random concrete subclass of this [KClass] found in the specified package. If no concrete subclass is found, an [IllegalArgumentException] is thrown.
  * @throws IllegalArgumentException If no concrete subclass is found.
  */
-internal fun KClass<*>.concreteSubclass(packageNameForChildClassLookup: String, randomize: Boolean): KClass<*> = getSubclassRelations(packageNameForChildClassLookup)[this]
-    ?.let { concreteSubclasses -> if(randomize) concreteSubclasses.randomOrNull() else concreteSubclasses.sortedBy { it.qualifiedName }.firstOrNull() }
+internal fun KClass<*>.concreteSubclass(
+    packageNameForChildClassLookup: String,
+    randomize: Boolean,
+): KClass<*> = getSubclassRelations(packageNameForChildClassLookup)[this]
+    ?.let { concreteSubclasses -> if (randomize) concreteSubclasses.randomOrNull() else concreteSubclasses.sortedBy { it.qualifiedName }.firstOrNull() }
     ?: throw IllegalArgumentException(
         "Cannot create dummy for abstract type $this as no concrete subclass " +
             "could be found in package $packageNameForChildClassLookup. " +
