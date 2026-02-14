@@ -210,8 +210,8 @@ class KotlinDummyBuilderTest {
             noinline buildFixedDummy: () -> T = ::fixedDummy,
             noinline buildRandomDummy: () -> T = ::randomDummy,
         ): Array<DynamicTest> = listOf(
-            TestCase.FixedValue("${typeDescription}: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
-            TestCase.RandomValue("${typeDescription}: randomDummy() should return return random value", buildRandomDummy),
+            TestCase.FixedValue("$typeDescription: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
+            TestCase.RandomValue("$typeDescription: randomDummy() should return return random value", buildRandomDummy),
         ).map {
             DynamicTest.dynamicTest(it.description) {
                 it.execute()
@@ -224,8 +224,8 @@ class KotlinDummyBuilderTest {
             noinline buildFixedDummy: () -> T = ::fixedDummy,
             noinline buildRandomDummy: () -> T = ::randomDummy,
         ): Array<DynamicTest> = listOf(
-            TestCase.FixedValue("${typeDescription}: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
-            TestCase.FixedValue("${typeDescription}: randomDummy() should return fixed value", buildRandomDummy, expectedFixedValue),
+            TestCase.FixedValue("$typeDescription: fixedDummy() should return fixed value", buildFixedDummy, expectedFixedValue),
+            TestCase.FixedValue("$typeDescription: randomDummy() should return fixed value", buildRandomDummy, expectedFixedValue),
         ).map {
             DynamicTest.dynamicTest(it.description) {
                 it.execute()
@@ -278,10 +278,12 @@ class KotlinDummyBuilderTest {
         val n: Clazz.Nested,
     ) {
         override fun equals(other: Any?) = other is Clazz && s == other.s && i == other.i && n == other.n
+
         override fun hashCode() = 31 * s.hashCode() + 31 * (i?.hashCode() ?: 0) + n.hashCode()
 
         class Nested(val s: String) {
             override fun equals(other: Any?) = other is Nested && s == other.s
+
             override fun hashCode() = s.hashCode()
         }
     }
@@ -296,6 +298,7 @@ class KotlinDummyBuilderTest {
 
     class ClassWithPrivateConstructor private constructor(val s: String) {
         override fun equals(other: Any?) = other is ClassWithPrivateConstructor && s == other.s
+
         override fun hashCode() = s.hashCode()
     }
 

@@ -38,10 +38,15 @@ internal fun <T> buildDummy(
     } as KClass<T & Any>
 
     fun <S> buildDummy(type: KType): S = buildDummy(type, randomize, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+
     fun <S : Any> buildDummy(clazz: KClass<S>): S = buildDummy(clazz.createType())
+
     fun <S : Any> buildDummy(typeReference: TypeReference<S>): S = buildDummy(typeReference.type)
-    fun nextCollectionSizeOr0(): Int = if(randomize) Random.nextInt(0, 100) else 0
-    fun <S> Collection<S>.randomOrFirst(): S = if(randomize) random() else first()
+
+    fun nextCollectionSizeOr0(): Int = if (randomize) Random.nextInt(0, 100) else 0
+
+    fun <S> Collection<S>.randomOrFirst(): S = if (randomize) random() else first()
+
     fun buildArray(): Any? {
         val size = nextCollectionSizeOr0()
         val type = type.argumentType(0)
@@ -68,9 +73,9 @@ internal fun <T> buildDummy(
         kClass == BigDecimal::class -> BigDecimal.valueOf(buildDummy(Long::class))
         kClass == LocalDate::class -> if (randomize) LocalDate.ofYearDay(nextInt(ChronoField.YEAR), nextInt(ChronoField.DAY_OF_YEAR)) else LocalDate.MIN
         kClass == LocalTime::class -> if (randomize) LocalTime.ofNanoOfDay(nextLong(ChronoField.NANO_OF_DAY)) else LocalTime.MIN
-        kClass == ZoneId::class -> if(randomize) ZoneId.of(ZoneId.getAvailableZoneIds().random()) else ZoneId.of("UTC")
-        kClass == ZoneOffset::class -> if(randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.MAX
-        kClass == Instant::class -> if(randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond .. Instant.MAX.epochSecond), nextLong(ChronoField.NANO_OF_SECOND)) else Instant.MIN
+        kClass == ZoneId::class -> if (randomize) ZoneId.of(ZoneId.getAvailableZoneIds().random()) else ZoneId.of("UTC")
+        kClass == ZoneOffset::class -> if (randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.MAX
+        kClass == Instant::class -> if (randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond..Instant.MAX.epochSecond), nextLong(ChronoField.NANO_OF_SECOND)) else Instant.MIN
         kClass == LocalDateTime::class -> LocalDateTime.of(buildDummy(LocalDate::class), buildDummy(LocalTime::class))
         kClass == OffsetTime::class -> OffsetTime.of(buildDummy(LocalTime::class), buildDummy(ZoneOffset::class))
         kClass == OffsetDateTime::class -> OffsetDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
@@ -80,14 +85,14 @@ internal fun <T> buildDummy(
         kClass == Class::class -> (type.argumentType(0).classifier as KClass<*>).java
         kClass.java.isEnum -> kClass.java.enumConstants.toList().randomOrFirst()
         kClass.objectInstance != null -> kClass.objectInstance
-        kClass == ByteArray::class -> ByteArray(nextCollectionSizeOr0()) { buildDummy(Byte::class)}
-        kClass == CharArray::class -> CharArray(nextCollectionSizeOr0()) { buildDummy(Char::class)}
-        kClass == ShortArray::class -> ShortArray(nextCollectionSizeOr0()) { buildDummy(Short::class)}
-        kClass == IntArray::class -> IntArray(nextCollectionSizeOr0()) { buildDummy(Int::class)}
-        kClass == LongArray::class -> LongArray(nextCollectionSizeOr0()) { buildDummy(Long::class)}
-        kClass == FloatArray::class -> FloatArray(nextCollectionSizeOr0()) { buildDummy(Float::class)}
-        kClass == DoubleArray::class -> DoubleArray(nextCollectionSizeOr0()) { buildDummy(Double::class)}
-        kClass == BooleanArray::class -> BooleanArray(nextCollectionSizeOr0()) { buildDummy(Boolean::class)}
+        kClass == ByteArray::class -> ByteArray(nextCollectionSizeOr0()) { buildDummy(Byte::class) }
+        kClass == CharArray::class -> CharArray(nextCollectionSizeOr0()) { buildDummy(Char::class) }
+        kClass == ShortArray::class -> ShortArray(nextCollectionSizeOr0()) { buildDummy(Short::class) }
+        kClass == IntArray::class -> IntArray(nextCollectionSizeOr0()) { buildDummy(Int::class) }
+        kClass == LongArray::class -> LongArray(nextCollectionSizeOr0()) { buildDummy(Long::class) }
+        kClass == FloatArray::class -> FloatArray(nextCollectionSizeOr0()) { buildDummy(Float::class) }
+        kClass == DoubleArray::class -> DoubleArray(nextCollectionSizeOr0()) { buildDummy(Double::class) }
+        kClass == BooleanArray::class -> BooleanArray(nextCollectionSizeOr0()) { buildDummy(Boolean::class) }
         kClass.java.isArray -> buildArray()
         kClass.isSuperclassOf(MutableList::class) -> List(nextCollectionSizeOr0()) { buildDummy<Any?>(type.argumentType(0)) }
         kClass.isSuperclassOf(MutableSet::class) -> HashSet<Any?>().apply { repeat(nextCollectionSizeOr0()) { add(buildDummy(type.argumentType(0))) } }
@@ -102,8 +107,9 @@ internal fun <T> buildDummy(
         else -> kClass.callConstructor(type, randomize, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
     } as T
 }
+
 private fun KType.argumentType(index: Int): KType = arguments[index].type ?: Any::class.createType()
 
-private fun nextLong(chronoField: ChronoField): Long = Random.nextLong(chronoField.range().largestMinimum .. chronoField.range().smallestMaximum)
+private fun nextLong(chronoField: ChronoField): Long = Random.nextLong(chronoField.range().largestMinimum..chronoField.range().smallestMaximum)
 
 private fun nextInt(chronoField: ChronoField): Int = nextLong(chronoField).toInt()
