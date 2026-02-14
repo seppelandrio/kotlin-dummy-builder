@@ -5,8 +5,8 @@
 
 A lightweight Kotlin/ Java library for generating dummy objects based on reflection for testing and prototyping purposes.
 
-This library recursively creates dummy instances of classes by using reflection to call their constructors with default or dummy values for their parameters.
-It supports various types, including primitives, collections, and custom classes.
+This library recursively creates dummy instances of classes by using reflection to call their constructors with default or random arguments.
+It supports various types, including primitives, collections, generics and custom classes.
 You can also customize the generated dummy objects by providing specific values for certain properties or types.
 For a complete list of supported types and features, please refer to the [features section](#features).
 
@@ -129,7 +129,7 @@ The library supports function types by generating a lambda that returns a dummy 
 
 > **Limitation**
 > 
-> Kotlin reflection looses type parameters for functions with more than 2 parameters, so the library will throw an exception when generating dummies for them.
+> Kotlin reflection looses type parameters for functions with more than 2 arguments, so the library will throw an exception when generating dummies for them.
 
 ## Custom Types
 For custom types, the library will try to find a constructor and call it with dummy values for its parameters.
