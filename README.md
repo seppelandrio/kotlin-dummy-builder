@@ -1,8 +1,7 @@
 # Kotlin Dummy Builder
-[![version](https://img.shields.io/github/v/release/seppelandrio/kotlin-dummy-builder?color=informational&include_prereleases&label=latest%20release)](https://github.com/seppelandrio/kotlin-dummy-builder/releases)
-[![license](https://img.shields.io/github/license/seppelandrio/kotlin-dummy-builder?color=yellow)](https://www.apache.org/licenses/LICENSE-2.0)
+[![version](https://img.shields.io/github/v/release/seppelandrio/kotlin-dummy-builder)](https://github.com/seppelandrio/kotlin-dummy-builder/releases)
 [![CI](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml/badge.svg)](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.seppelandrio.kotlindummybuilder/kotlin-dummy-builder.svg)](https://search.maven.org/artifact/io.github.seppelandrio.kotlindummybuilder/kotlin-dummy-builder/)
+[![license](https://img.shields.io/github/license/seppelandrio/kotlin-dummy-builder?color=yellow)](https://www.apache.org/licenses/LICENSE-2.0)
 
 A lightweight Kotlin/ Java library for generating dummy objects based on reflection for testing and prototyping purposes.
 
