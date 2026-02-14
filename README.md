@@ -21,26 +21,31 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 | Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
 
 ## Usage
+> ℹ️ You can either generate dummies with fixed/ default values by calling the `fixedDummy` function or with random values by calling the `randomDummy` function.
+> Both functions have the same parameters and behavior, except for the values they generate.
+> 
+> For the following section we will use `fixedDummy` for demonstration purposes, but the same applies to `randomDummy` as well.
+
 Default usage
 ```kotlin
-val myDummy = dummy<MyClass>()
+val myDummy = fixedDummy<MyClass>()
 ```
 
 To customize constructor arguments you can either use the copy operator of data classes (preferred)
 ```kotlin
-val myDummy = dummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+val myDummy = fixedDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
 ```
 
 or use `argumentOverwrites` to overwrite constructor arguments either by property reference or by name
 ```kotlin
-val myDummy = dummy<MyClass>(
+val myDummy = fixedDummy<MyClass>(
     argumentOverwrites = setOf(
         ArgumentOverwrite(MyClass::someProperty, "CustomValue"),
         ArgumentOverwrite(MyClass::anotherProperty, 42),
     ),
 )
 
-val myDummy2 = dummy<MyClass>(
+val myDummy2 = fixedDummy<MyClass>(
     argumentOverwrites = mapOf(
         "someProperty" to "CustomValue",
         "anotherProperty" to 42,
@@ -50,7 +55,7 @@ val myDummy2 = dummy<MyClass>(
 
 To provide specific implementations for certain types across every (nested) property in this dummy, use `typeOverwrites`
 ```kotlin
-val myDummy = dummy<MyClass>(
+val myDummy = fixedDummy<MyClass>(
   typeOverwrites = setOf(
     TypeOverwrite(String::class, "OverwrittenString"),
   ),
@@ -70,7 +75,7 @@ This library generates dummy by calling constructors based on reflection and so 
 ### Simple Types
 The library supports the following types out of the box
 
-| Type                 | Default Value                                         |
+| Type                 | Fixed/ Default Value                                  |
 |----------------------|-------------------------------------------------------|
 | Boolean              | `false`                                               |
 | Byte                 | `0`                                                   |
@@ -81,42 +86,42 @@ The library supports the following types out of the box
 | Double               | `0.0`                                                 |
 | Char                 | `'a'`                                                 |
 | String               | `""`                                                  |
+| BigInteger           | `BigInteger.ZERO`                                     |
 | BigDecimal           | `BigDecimal.ZERO`                                     |
-| LocalDateTime        | `LocalDateTime.MIN`                                   |
 | LocalDate            | `LocalDate.MIN`                                       |
 | LocalTime            | `LocalTime.MIN`                                       |
-| OffsetTime           | `OffsetDateTime.MIN`                                  |
-| OffsetDateTime       | `OffsetDateTime.MIN`                                  |
-| ZonedDateTime        | `ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.UTC)` |
+| ZoneId               | `ZoneId.of("UTC")`                                    |
+| ZoneOffset           | `ZoneOffset.MAX`                                      |
 | Instant              | `Instant.MIN`                                         |
+| LocalDateTime        | `LocalDateTime.MIN`                                   |
+| OffsetTime           | `OffsetTime.MIN`                                      |
+| OffsetDateTime       | `OffsetDateTime.MIN`                                  |
+| ZonedDateTime        | `ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.MAX)` |
 | java.time.Duration   | `Duration.ZERO`                                       |
 | kotlin.time.Duration | `Duration.ZERO`                                       |
 | KClass\<T>           | `T::class`                                            |
 | Class\<T>            | `T::class.java`                                       |
-| CharRange            | `'a'..'a'`                                            |
-| IntRange             | `0..0`                                                |
-| LongRange            | `0L..0L`                                              |
 | Enum                 | `first value of the enum`                             |
 
 ## Collection Types
 The library supports the following collection types out of the box
 
-| Type              | Default Value        |
-|-------------------|----------------------|
-| ByteArray         | `ByteArray(0)`       |
-| CharArray         | `CharArray(0)`       |
-| ShortArray        | `ShortArray(0)`      |
-| IntArray          | `IntArray(0)`        |
-| LongArray         | `LongArray(0)`       |
-| FloatArray        | `FloatArray(0)`      |
-| DoubleArray       | `DoubleArray(0)`     |
-| BooleanArray      | `BooleanArray(0)`    |
-| Array\<T>         | `emptyArray<T>()`    |
-| Iterable\<T>      | `mutableListOf<T>()` |
-| Collection\<T>    | `mutableListOf<T>()` |
-| (Mutable)List\<T> | `mutableListOf<T>()` |
-| (Mutable)Set\<T>  | `mutableSetOf<T>()`  |
-| Stream<T>         | `Stream.empty<T>()`  |
+| Type                | Default Value          |
+|---------------------|------------------------|
+| ByteArray           | `ByteArray(0)`         |
+| CharArray           | `CharArray(0)`         |
+| ShortArray          | `ShortArray(0)`        |
+| IntArray            | `IntArray(0)`          |
+| LongArray           | `LongArray(0)`         |
+| FloatArray          | `FloatArray(0)`        |
+| DoubleArray         | `DoubleArray(0)`       |
+| BooleanArray        | `BooleanArray(0)`      |
+| Array\<T>           | `emptyArray<T>()`      |
+| Iterable\<T>        | `mutableListOf<T>()`   |
+| Collection\<T>      | `mutableListOf<T>()`   |
+| (Mutable)List\<T>   | `mutableListOf<T>()`   |
+| (Mutable)Set\<T>    | `mutableSetOf<T>()`    |
+| Stream<T>           | `Stream.empty<T>()`    |
 | (Mutable)Map\<K, V> | `mutableMapOf<K, V>()` |
 
 
