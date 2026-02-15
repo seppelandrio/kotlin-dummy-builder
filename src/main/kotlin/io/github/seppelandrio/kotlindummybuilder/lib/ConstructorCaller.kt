@@ -12,7 +12,7 @@ import kotlin.reflect.jvm.isAccessible
  * Calls a matching constructor of this class with dummy values for all parameters,
  * applying [argumentOverwrites] and [typeOverwrites] as needed.
  */
-fun <T : Any> KClass<T>.callConstructor(
+internal fun <T : Any> KClass<T>.callConstructor(
     type: KType,
     randomize: Boolean,
     packageNameForChildClassLookup: String,
