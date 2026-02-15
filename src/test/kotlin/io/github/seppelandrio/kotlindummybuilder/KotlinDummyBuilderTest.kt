@@ -57,65 +57,65 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("Enum", ExampleEnum.A),
         // endregion
         // region collections
-        *TestCases.defaultAndRandom("ByteArray", emptyList(), { defaultDummy<ByteArray>().toList() }, { randomDummy<ByteArray>().toList() }),
-        *TestCases.defaultAndRandom("CharArray", emptyList(), { defaultDummy<CharArray>().toList() }, { randomDummy<CharArray>().toList() }),
-        *TestCases.defaultAndRandom("ShortArray", emptyList(), { defaultDummy<ShortArray>().toList() }, { randomDummy<ShortArray>().toList() }),
-        *TestCases.defaultAndRandom("IntArray", emptyList(), { defaultDummy<IntArray>().toList() }, { randomDummy<IntArray>().toList() }),
-        *TestCases.defaultAndRandom("LongArray", emptyList(), { defaultDummy<LongArray>().toList() }, { randomDummy<LongArray>().toList() }),
-        *TestCases.defaultAndRandom("FloatArray", emptyList(), { defaultDummy<FloatArray>().toList() }, { randomDummy<FloatArray>().toList() }),
-        *TestCases.defaultAndRandom("DoubleArray", emptyList(), { defaultDummy<DoubleArray>().toList() }, { randomDummy<DoubleArray>().toList() }),
-        *TestCases.defaultAndRandom("BooleanArray", emptyList(), { defaultDummy<BooleanArray>().toList() }, { randomDummy<BooleanArray>().toList() }),
-        *TestCases.defaultAndRandom("Array<String>", emptyList(), { defaultDummy<Array<String>>().toList() }, { randomDummy<Array<String>>().toList() }),
-        *TestCases.defaultAndRandom("Iterable<String>", emptyList(), { defaultDummy<Iterable<String>>().toList() }, { randomDummy<Iterable<String>>().toList() }),
-        *TestCases.defaultAndRandom("Collection<String>", emptyList(), { defaultDummy<Collection<String>>().toList() }, { randomDummy<Collection<String>>().toList() }),
-        *TestCases.defaultAndRandom("List<String>", emptyList(), { defaultDummy<List<String>>() }, { randomDummy<List<String>>() }),
-        *TestCases.defaultAndRandom("MutableList<String>", emptyList(), { defaultDummy<MutableList<String>>() }, { randomDummy<MutableList<String>>() }),
-        *TestCases.defaultAndRandom("Set<String>", emptySet(), { defaultDummy<Set<String>>() }, { randomDummy<Set<String>>() }),
-        *TestCases.defaultAndRandom("MutableSet<String>", emptySet(), { defaultDummy<MutableSet<String>>() }, { randomDummy<MutableSet<String>>() }),
-        *TestCases.defaultAndRandom("Stream<String>", emptyList(), { defaultDummy<Stream<String>>().toList() }, { randomDummy<Stream<String>>().toList() }),
-        *TestCases.defaultAndRandom("Map<String, Int>", emptyList(), { defaultDummy<Map<String, Int>>().entries.toList() }, { randomDummy<Map<String, Int>>().entries.toList() }),
-        *TestCases.defaultAndRandom("MutableMap<String, Int>", emptyList(), { defaultDummy<MutableMap<String, Int>>().entries.toList() }, { randomDummy<MutableMap<String, Int>>().entries.toList() }),
+        *TestCases.defaultAndRandom("ByteArray", emptyList(), { default<ByteArray>().toList() }, { random<ByteArray>().toList() }),
+        *TestCases.defaultAndRandom("CharArray", emptyList(), { default<CharArray>().toList() }, { random<CharArray>().toList() }),
+        *TestCases.defaultAndRandom("ShortArray", emptyList(), { default<ShortArray>().toList() }, { random<ShortArray>().toList() }),
+        *TestCases.defaultAndRandom("IntArray", emptyList(), { default<IntArray>().toList() }, { random<IntArray>().toList() }),
+        *TestCases.defaultAndRandom("LongArray", emptyList(), { default<LongArray>().toList() }, { random<LongArray>().toList() }),
+        *TestCases.defaultAndRandom("FloatArray", emptyList(), { default<FloatArray>().toList() }, { random<FloatArray>().toList() }),
+        *TestCases.defaultAndRandom("DoubleArray", emptyList(), { default<DoubleArray>().toList() }, { random<DoubleArray>().toList() }),
+        *TestCases.defaultAndRandom("BooleanArray", emptyList(), { default<BooleanArray>().toList() }, { random<BooleanArray>().toList() }),
+        *TestCases.defaultAndRandom("Array<String>", emptyList(), { default<Array<String>>().toList() }, { random<Array<String>>().toList() }),
+        *TestCases.defaultAndRandom("Iterable<String>", emptyList(), { default<Iterable<String>>().toList() }, { random<Iterable<String>>().toList() }),
+        *TestCases.defaultAndRandom("Collection<String>", emptyList(), { default<Collection<String>>().toList() }, { random<Collection<String>>().toList() }),
+        *TestCases.defaultAndRandom("List<String>", emptyList(), { default<List<String>>() }, { random<List<String>>() }),
+        *TestCases.defaultAndRandom("MutableList<String>", emptyList(), { default<MutableList<String>>() }, { random<MutableList<String>>() }),
+        *TestCases.defaultAndRandom("Set<String>", emptySet(), { default<Set<String>>() }, { random<Set<String>>() }),
+        *TestCases.defaultAndRandom("MutableSet<String>", emptySet(), { default<MutableSet<String>>() }, { random<MutableSet<String>>() }),
+        *TestCases.defaultAndRandom("Stream<String>", emptyList(), { default<Stream<String>>().toList() }, { random<Stream<String>>().toList() }),
+        *TestCases.defaultAndRandom("Map<String, Int>", emptyList(), { default<Map<String, Int>>().entries.toList() }, { random<Map<String, Int>>().entries.toList() }),
+        *TestCases.defaultAndRandom("MutableMap<String, Int>", emptyList(), { default<MutableMap<String, Int>>().entries.toList() }, { random<MutableMap<String, Int>>().entries.toList() }),
         // endregion
         // region functions
-        *TestCases.alwaysDefault("lambda () -> Unit", Unit, { defaultDummy<() -> Unit>()() }, { randomDummy<() -> Unit>()() }),
-        *TestCases.alwaysDefault("function () -> Unit", Unit, { defaultDummy<Function0<Unit>>()() }, { randomDummy<Function0<Unit>>()() }),
-        *TestCases.defaultAndRandom("lambda () -> String", "", { defaultDummy<() -> String>()() }, { randomDummy<() -> String>()() }),
-        *TestCases.defaultAndRandom("function () -> String", "", { defaultDummy<Function0<String>>()() }, { randomDummy<Function0<String>>()() }),
-        *TestCases.defaultAndRandom("lambda () -> String?", "", { defaultDummy<() -> String?>()()!! }, { randomDummy<() -> String?>()()!! }),
-        *TestCases.defaultAndRandom("function () -> String?", "", { defaultDummy<Function0<String?>>()()!! }, { randomDummy<Function0<String?>>()()!! }),
-        *TestCases.alwaysDefault("lambda (String) -> Unit", Unit, { defaultDummy<(String) -> Unit>()("input") }, { randomDummy<(String) -> Unit>()("input") }),
-        *TestCases.alwaysDefault("function (String) -> Unit", Unit, { defaultDummy<Function1<String, Unit>>()("input") }, { randomDummy<Function1<String, Unit>>()("input") }),
-        *TestCases.defaultAndRandom("lambda (String) -> String", "", { defaultDummy<(String) -> String>()("input") }, { randomDummy<(String) -> String>()("input") }),
-        *TestCases.defaultAndRandom("function (String) -> String", "", { defaultDummy<Function1<String, String>>()("input") }, { randomDummy<Function1<String, String>>()("input") }),
-        *TestCases.defaultAndRandom("lambda (String) -> String?", "", { defaultDummy<(String) -> String?>()("input")!! }, { randomDummy<(String) -> String?>()("input")!! }),
-        *TestCases.defaultAndRandom("function (String) -> String?", "", { defaultDummy<Function1<String, String?>>()("input")!! }, { randomDummy<Function1<String, String?>>()("input")!! }),
-        *TestCases.alwaysDefault("lambda (String, Int?) -> Unit", Unit, { defaultDummy<(String, Int?) -> Unit>()("input", null) }, { randomDummy<(String, Int?) -> Unit>()("input", null) }),
+        *TestCases.alwaysDefault("lambda () -> Unit", Unit, { default<() -> Unit>()() }, { random<() -> Unit>()() }),
+        *TestCases.alwaysDefault("function () -> Unit", Unit, { default<Function0<Unit>>()() }, { random<Function0<Unit>>()() }),
+        *TestCases.defaultAndRandom("lambda () -> String", "", { default<() -> String>()() }, { random<() -> String>()() }),
+        *TestCases.defaultAndRandom("function () -> String", "", { default<Function0<String>>()() }, { random<Function0<String>>()() }),
+        *TestCases.defaultAndRandom("lambda () -> String?", "", { default<() -> String?>()()!! }, { random<() -> String?>()()!! }),
+        *TestCases.defaultAndRandom("function () -> String?", "", { default<Function0<String?>>()()!! }, { random<Function0<String?>>()()!! }),
+        *TestCases.alwaysDefault("lambda (String) -> Unit", Unit, { default<(String) -> Unit>()("input") }, { random<(String) -> Unit>()("input") }),
+        *TestCases.alwaysDefault("function (String) -> Unit", Unit, { default<Function1<String, Unit>>()("input") }, { random<Function1<String, Unit>>()("input") }),
+        *TestCases.defaultAndRandom("lambda (String) -> String", "", { default<(String) -> String>()("input") }, { random<(String) -> String>()("input") }),
+        *TestCases.defaultAndRandom("function (String) -> String", "", { default<Function1<String, String>>()("input") }, { random<Function1<String, String>>()("input") }),
+        *TestCases.defaultAndRandom("lambda (String) -> String?", "", { default<(String) -> String?>()("input")!! }, { random<(String) -> String?>()("input")!! }),
+        *TestCases.defaultAndRandom("function (String) -> String?", "", { default<Function1<String, String?>>()("input")!! }, { random<Function1<String, String?>>()("input")!! }),
+        *TestCases.alwaysDefault("lambda (String, Int?) -> Unit", Unit, { default<(String, Int?) -> Unit>()("input", null) }, { random<(String, Int?) -> Unit>()("input", null) }),
         *TestCases.alwaysDefault(
             typeDescription = "function (String, Int?) -> Unit",
             expectedDefaultValue = Unit,
-            buildDefaultDummy = { defaultDummy<Function2<String, Int?, Unit>>()("input", null) },
-            buildRandomDummy = { randomDummy<Function2<String, Int?, Unit>>()("input", null) },
+            buildDefaultDummy = { default<Function2<String, Int?, Unit>>()("input", null) },
+            buildRandomDummy = { random<Function2<String, Int?, Unit>>()("input", null) },
         ),
-        *TestCases.defaultAndRandom("lambda (String, Int?) -> String", "", { defaultDummy<(String, Int?) -> String>()("input", null) }, { randomDummy<(String, Int?) -> String>()("input", null) }),
+        *TestCases.defaultAndRandom("lambda (String, Int?) -> String", "", { default<(String, Int?) -> String>()("input", null) }, { random<(String, Int?) -> String>()("input", null) }),
         *TestCases.defaultAndRandom(
             typeDescription = "function (String, Int?) -> String",
             expectedDefaultValue = "",
-            buildDefaultDummy = { defaultDummy<Function2<String, Int?, String>>()("input", null) },
-            buildRandomDummy = { randomDummy<Function2<String, Int?, String>>()("input", null) },
+            buildDefaultDummy = { default<Function2<String, Int?, String>>()("input", null) },
+            buildRandomDummy = { random<Function2<String, Int?, String>>()("input", null) },
         ),
         *TestCases.defaultAndRandom("lambda (String, Int?) -> String?", "", {
-            defaultDummy<
+            default<
                 (
                     String,
                     Int?,
                 ) -> String?,
             >()("input", null)!!
-        }, { randomDummy<(String, Int?) -> String?>()("input", null)!! }),
+        }, { random<(String, Int?) -> String?>()("input", null)!! }),
         *TestCases.defaultAndRandom(
             typeDescription = "function (String, Int?) -> String?",
             expectedDefaultValue = "",
-            buildDefaultDummy = { defaultDummy<Function2<String, Int?, String?>>()("input", null)!! },
-            buildRandomDummy = { randomDummy<Function2<String, Int?, String?>>()("input", null)!! },
+            buildDefaultDummy = { default<Function2<String, Int?, String?>>()("input", null)!! },
+            buildRandomDummy = { random<Function2<String, Int?, String?>>()("input", null)!! },
         ),
         // endregion
         // region complex objects
@@ -123,7 +123,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("Clazz", Clazz("", null, Clazz.Nested(""))),
         *TestCases.defaultAndRandom("DataClass", DataClass("", null, DataClass.Nested(false))),
         *TestCases.defaultAndRandom("GenericClass", GenericClass(GenericClass.Nested(""), GenericClass.Nested(0))),
-        *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { defaultDummy<ClassWithPrivateConstructor>().s }, { randomDummy<ClassWithPrivateConstructor>().s }),
+        *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.alwaysDefault("Object", Object),
         // endregion
         // region abstract types
@@ -138,7 +138,7 @@ class KotlinDummyBuilderTest {
     inner class FunctionsWithMoreThanTwoArguments {
         @Test
         fun `should not be able to generate default dummy as reflections are not able to provide type arguments anymore for the return value`() {
-            val exception = assertFails { defaultDummy<(Nothing?, Nothing?, Nothing?) -> String>() }
+            val exception = assertFails { default<(Nothing?, Nothing?, Nothing?) -> String>() }
 
             assertTrue(exception is IllegalArgumentException)
             assertEquals("Cannot create dummy for function type as kotlin does not capture the generic type information: kotlin.Function3<*, *, *, *>.", exception.message)
@@ -146,7 +146,7 @@ class KotlinDummyBuilderTest {
 
         @Test
         fun `should not be able to generate random dummy as reflections are not able to provide type arguments anymore for the return value`() {
-            val exception = assertFails { randomDummy<(Nothing?, Nothing?, Nothing?) -> String>() }
+            val exception = assertFails { random<(Nothing?, Nothing?, Nothing?) -> String>() }
 
             assertTrue(exception is IllegalArgumentException)
             assertEquals("Cannot create dummy for function type as kotlin does not capture the generic type information: kotlin.Function3<*, *, *, *>.", exception.message)
@@ -159,7 +159,7 @@ class KotlinDummyBuilderTest {
         inner class Arguments {
             @Test
             fun `should apply overwrite to default dummy`() {
-                val d = defaultDummy<Clazz>(
+                val d = default<Clazz>(
                     argumentOverwrites = setOf(
                         ArgumentOverwrite(Clazz::s, "overwritten"),
                     ),
@@ -171,7 +171,7 @@ class KotlinDummyBuilderTest {
 
             @Test
             fun `should apply overwrite to random dummy`() {
-                val d = randomDummy<Clazz>(
+                val d = random<Clazz>(
                     argumentOverwrites = setOf(
                         ArgumentOverwrite(Clazz::s, "overwritten"),
                     ),
@@ -186,7 +186,7 @@ class KotlinDummyBuilderTest {
         inner class Types {
             @Test
             fun `should apply overwrite to default dummy`() {
-                val d = defaultDummy<Clazz>(
+                val d = default<Clazz>(
                     typeOverwrites = setOf(
                         TypeOverwrite(String::class, "overwritten"),
                     ),
@@ -198,7 +198,7 @@ class KotlinDummyBuilderTest {
 
             @Test
             fun `should apply overwrite to random dummy`() {
-                val d = randomDummy<Clazz>(
+                val d = random<Clazz>(
                     typeOverwrites = setOf(
                         TypeOverwrite(String::class, "overwritten"),
                     ),
@@ -214,11 +214,11 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> defaultAndRandom(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::defaultDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildDefaultDummy: () -> T = ::default,
+            noinline buildRandomDummy: () -> T = ::random,
         ): Array<DynamicTest> = listOf(
-            TestCase.DefaultValue("$typeDescription: defaultDummy() should return default value", buildDefaultDummy, expectedDefaultValue),
-            TestCase.RandomValue("$typeDescription: randomDummy() should return return random value", buildRandomDummy),
+            TestCase.DefaultValue("$typeDescription: default() should return default value", buildDefaultDummy, expectedDefaultValue),
+            TestCase.RandomValue("$typeDescription: random() should return return random value", buildRandomDummy),
         ).map {
             DynamicTest.dynamicTest(it.description) {
                 it.execute()
@@ -228,11 +228,11 @@ class KotlinDummyBuilderTest {
         inline fun <reified T : Any> alwaysDefault(
             typeDescription: String,
             expectedDefaultValue: T,
-            noinline buildDefaultDummy: () -> T = ::defaultDummy,
-            noinline buildRandomDummy: () -> T = ::randomDummy,
+            noinline buildDefaultDummy: () -> T = ::default,
+            noinline buildRandomDummy: () -> T = ::random,
         ): Array<DynamicTest> = listOf(
-            TestCase.DefaultValue("$typeDescription: defaultDummy() should return default value", buildDefaultDummy, expectedDefaultValue),
-            TestCase.DefaultValue("$typeDescription: randomDummy() should return default value", buildRandomDummy, expectedDefaultValue),
+            TestCase.DefaultValue("$typeDescription: default() should return default value", buildDefaultDummy, expectedDefaultValue),
+            TestCase.DefaultValue("$typeDescription: random() should return default value", buildRandomDummy, expectedDefaultValue),
         ).map {
             DynamicTest.dynamicTest(it.description) {
                 it.execute()
