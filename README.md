@@ -19,8 +19,7 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 | Gradle Kts | `testImplementation("io.github.seppelandrio:kotlin-dummy-builder:x.y.z")`                                                                                                                  |
 | Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
 
-> **⚠️ Compatibility**
->
+> [!IMPORTANT]
 > Since this library makes extensive use of `kotlin-reflect`, and many related issues are resolved with each new Kotlin language release,
 > it targets the latest Kotlin language version by default (currently 2.3).
 >
@@ -31,9 +30,10 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 > It provides the same feature set, but compatibility might be slightly reduced due to missing `kotlin-reflect` features or unresolved issues in older Kotlin versions.
 
 ## Usage
-> ℹ️ You can either generate dummies with default values by calling the `default` function or with random values by calling the `random` function.
-> Both functions have the same parameters and behavior, except for the values they generate.
-> 
+You can either generate dummies with default values by calling the `default` function or with random values by calling the `random` function.
+Both functions have the same parameters and behavior, except for the values they generate.
+
+> [!NOTE]
 > For the following section we will use `default` for demonstration purposes, but the same applies to `random` as well.
 
 Default usage
@@ -41,7 +41,7 @@ Default usage
 val myDummy = default<MyClass>()
 ```
 
-To customize constructor arguments you can either use the copy operator of data classes (preferred)
+To customize the dummy you can either use the copy operator of data classes (preferred)
 ```kotlin
 val myDummy = default<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
 ```
@@ -63,7 +63,7 @@ val myDummy2 = default<MyClass>(
 )
 ```
 
-To provide specific implementations for certain types across every (nested) property in this dummy, use `typeOverwrites`
+To provide specific values for certain types across every (nested) property in this dummy, use `typeOverwrites`
 ```kotlin
 val myDummy = default<MyClass>(
   typeOverwrites = setOf(
@@ -75,7 +75,7 @@ val myDummy = default<MyClass>(
 
 When using argument and type overwrites together, argument overwrites take precedence.
 
-If your type or its nested properties are abstract classes or interfaces,
+If your type or its nested property is an abstract class or interface,
 you may need to specify `packageNameForChildClassLookup` to help the dummy builder find concrete implementations.
 By default, it uses the package of the provided class.
 
@@ -139,17 +139,19 @@ The library supports the following collection types out of the box
 ## Function Types
 The library supports function types by generating a lambda that returns a dummy value of the return type.
 
-> **Limitation**
-> 
+> [!WARNING]
 > Kotlin reflection looses type parameters for functions with more than 2 arguments, so the library will throw an exception when generating dummies for them.
 
 ## Custom Types
 For custom types, the library will try to find a constructor and call it with dummy values for its parameters.
 
-Additionally, it supports the following language features
-- **Abstract Classes and Interfaces:** if the type is an abstract class or an interface, it will try to find a concrete implementation and use it to generate the dummy
-- **Sealed Classes and Interfaces:** if the type is a sealed class, it will use a non-abstract subclass and use it to generate the dummy
-- **Generics:** if the type has generic parameters, it will infer the type arguments from the context and use them to generate the dummy
-- **Value Classes:** if the type is a value class, it will generate a dummy for its underlying type and use it to create an instance of the value class
-- **Objects:** if the type is an object, it will return the object instance
-- **Private Constructors:** if the type has a private constructor, it will try to make it accessible and use it to generate the dummy
+Additionally, it supports the following features
+
+| Feature                       | Behavior                                                                                                                                    |
+|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Abstract Classes/ Interfaces  | it will try to find a concrete implementation the package of the generated dummy object or if specified in `packageNameForChildClassLookup` |
+| Sealed Classes and Interfaces | it will use a non-abstract subclass and use it to generate the dummy                                                                        |
+| Generics                      | it will infer the type arguments from the context and use them to generate the dummy                                                        |
+| Value Classes                 | it will generate a dummy for its underlying type and use it to create an instance of the value class                                        |
+| Objects                       | it will return the object instance                                                                                                          |
+| Private Constructors          | it will try to make it accessible and use it to generate the dummy                                                                          |
