@@ -16,6 +16,7 @@ import java.time.OffsetTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.util.Currency
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -48,6 +49,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("ZonedDateTime", ZonedDateTime.parse("1970-01-01T00:00:00Z")),
         *TestCases.defaultAndRandom("Duration", Duration.ZERO),
         *TestCases.defaultAndRandom("kotlin.time.Duration", kotlin.time.Duration.ZERO),
+        *TestCases.defaultAndRandom("Currency", Currency.getInstance("USD")),
         // endregion
         // region classes
         *TestCases.alwaysDefault("KClass", Int::class),

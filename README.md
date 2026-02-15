@@ -110,6 +110,7 @@ The library supports the following types out of the box
 | ZonedDateTime        | `1970-01-01T00:00:00Z`    |
 | java.time.Duration   | `Duration.ZERO`           |
 | kotlin.time.Duration | `Duration.ZERO`           |
+| Currency             | `USD`                     |
 | KClass\<T>           | `T::class`                |
 | Class\<T>            | `T::class.java`           |
 | Enum                 | `first value of the enum` |
