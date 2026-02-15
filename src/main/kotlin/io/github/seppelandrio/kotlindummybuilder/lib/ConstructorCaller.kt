@@ -1,6 +1,5 @@
 package io.github.seppelandrio.kotlindummybuilder.lib
 
-import kotlin.collections.get
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
@@ -20,8 +19,8 @@ fun <T : Any> KClass<T>.callConstructor(
     typeOverwrites: Map<KClass<*>, Any>,
 ): T {
     val constructor = constructors
-        .sortedBy { it.parameters.size }
-        .firstOrNull { argumentOverwrites.keys.all { propertyName -> propertyName in it.parameters.map { it.name } } }
+        .sortedBy { constructor -> constructor.parameters.size }
+        .firstOrNull { constructor -> argumentOverwrites.keys.all { propertyName -> propertyName in constructor.parameters.map { it.name } } }
         ?: throw IllegalArgumentException("Cannot construct test instance for type $type as no constructor matches the provided overwrites: ${argumentOverwrites.keys}")
     constructor.isAccessible = true
     val parameters = constructor.parameters.map { parameter ->
