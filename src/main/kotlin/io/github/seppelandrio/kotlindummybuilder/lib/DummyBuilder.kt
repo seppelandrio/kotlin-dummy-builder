@@ -73,11 +73,11 @@ internal fun <T> buildDummy(
         kClass == String::class -> buildDummy(object : TypeReference<List<Char>>() {}).joinToString("")
         kClass == BigInteger::class -> BigInteger.valueOf(buildDummy(Long::class))
         kClass == BigDecimal::class -> BigDecimal.valueOf(buildDummy(Long::class))
-        kClass == LocalDate::class -> if (randomize) LocalDate.ofYearDay(nextInt(ChronoField.YEAR), nextInt(ChronoField.DAY_OF_YEAR)) else LocalDate.MIN
-        kClass == LocalTime::class -> if (randomize) LocalTime.ofNanoOfDay(nextLong(ChronoField.NANO_OF_DAY)) else LocalTime.MIN
+        kClass == LocalDate::class -> if (randomize) LocalDate.ofEpochDay(nextLong(ChronoField.EPOCH_DAY)) else LocalDate.ofEpochDay(0)
+        kClass == LocalTime::class -> if (randomize) LocalTime.ofNanoOfDay(nextLong(ChronoField.NANO_OF_DAY)) else LocalTime.ofSecondOfDay(0)
         kClass == ZoneId::class -> if (randomize) ZoneId.of(ZoneId.getAvailableZoneIds().random()) else ZoneId.of("UTC")
-        kClass == ZoneOffset::class -> if (randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.MAX
-        kClass == Instant::class -> if (randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond..Instant.MAX.epochSecond), nextLong(ChronoField.NANO_OF_SECOND)) else Instant.MIN
+        kClass == ZoneOffset::class -> if (randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.UTC
+        kClass == Instant::class -> if (randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond..Instant.MAX.epochSecond)) else Instant.ofEpochSecond(0)
         kClass == LocalDateTime::class -> LocalDateTime.of(buildDummy(LocalDate::class), buildDummy(LocalTime::class))
         kClass == OffsetTime::class -> OffsetTime.of(buildDummy(LocalTime::class), buildDummy(ZoneOffset::class))
         kClass == OffsetDateTime::class -> OffsetDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
