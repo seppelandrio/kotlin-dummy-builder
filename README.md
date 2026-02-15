@@ -75,33 +75,33 @@ This library generates dummy by calling constructors based on reflection and so 
 ### Simple Types
 The library supports the following types out of the box
 
-| Type                 | Default Value                                         |
-|----------------------|-------------------------------------------------------|
-| Boolean              | `false`                                               |
-| Byte                 | `0`                                                   |
-| Short                | `0`                                                   |
-| Int                  | `0`                                                   |
-| Long                 | `0L`                                                  |
-| Float                | `0.0f`                                                |
-| Double               | `0.0`                                                 |
-| Char                 | `'a'`                                                 |
-| String               | `""`                                                  |
-| BigInteger           | `BigInteger.ZERO`                                     |
-| BigDecimal           | `BigDecimal.ZERO`                                     |
-| LocalDate            | `LocalDate.MIN`                                       |
-| LocalTime            | `LocalTime.MIN`                                       |
-| ZoneId               | `ZoneId.of("UTC")`                                    |
-| ZoneOffset           | `ZoneOffset.MAX`                                      |
-| Instant              | `Instant.MIN`                                         |
-| LocalDateTime        | `LocalDateTime.MIN`                                   |
-| OffsetTime           | `OffsetTime.MIN`                                      |
-| OffsetDateTime       | `OffsetDateTime.MIN`                                  |
-| ZonedDateTime        | `ZonedDateTime.of(LocalDateTime.MIN, ZoneOffset.MAX)` |
-| java.time.Duration   | `Duration.ZERO`                                       |
-| kotlin.time.Duration | `Duration.ZERO`                                       |
-| KClass\<T>           | `T::class`                                            |
-| Class\<T>            | `T::class.java`                                       |
-| Enum                 | `first value of the enum`                             |
+| Type                 | Default Value             |
+|----------------------|---------------------------|
+| Boolean              | `false`                   |
+| Byte                 | `0`                       |
+| Short                | `0`                       |
+| Int                  | `0`                       |
+| Long                 | `0L`                      |
+| Float                | `0.0f`                    |
+| Double               | `0.0`                     |
+| Char                 | `'a'`                     |
+| String               | `""`                      |
+| BigInteger           | `BigInteger.ZERO`         |
+| BigDecimal           | `BigDecimal.ZERO`         |
+| LocalDate            | `1970-01-01`              |
+| LocalTime            | `00:00`                   |
+| ZoneId               | `ZoneId.of("UTC")`        |
+| ZoneOffset           | `ZoneOffset.UTC`          |
+| Instant              | `1970-01-01T00:00:00Z`    |
+| LocalDateTime        | `1970-01-01T00:00:00`     |
+| OffsetTime           | `00:00Z`                  |
+| OffsetDateTime       | `1970-01-01T00:00:00Z`    |
+| ZonedDateTime        | `1970-01-01T00:00:00Z`    |
+| java.time.Duration   | `Duration.ZERO`           |
+| kotlin.time.Duration | `Duration.ZERO`           |
+| KClass\<T>           | `T::class`                |
+| Class\<T>            | `T::class.java`           |
+| Enum                 | `first value of the enum` |
 
 ## Collection Types
 The library supports the following collection types out of the box
