@@ -77,7 +77,7 @@ internal fun <T> buildDummy(
         kClass == LocalDate::class -> if (randomize) LocalDate.ofEpochDay(nextLong(ChronoField.EPOCH_DAY)) else LocalDate.ofEpochDay(0)
         kClass == LocalTime::class -> if (randomize) LocalTime.ofNanoOfDay(nextLong(ChronoField.NANO_OF_DAY)) else LocalTime.ofSecondOfDay(0)
         kClass == ZoneId::class -> if (randomize) ZoneId.of(ZoneId.getAvailableZoneIds().random()) else ZoneId.of("UTC")
-        kClass == ZoneOffset::class -> if (randomize) ZoneOffset.ofTotalSeconds(nextInt(ChronoField.OFFSET_SECONDS)) else ZoneOffset.UTC
+        kClass == ZoneOffset::class -> if (randomize) ZoneOffset.ofTotalSeconds(nextLong(ChronoField.OFFSET_SECONDS).toInt()) else ZoneOffset.UTC
         kClass == Instant::class -> if (randomize) Instant.ofEpochSecond(Random.nextLong(Instant.MIN.epochSecond..Instant.MAX.epochSecond)) else Instant.ofEpochSecond(0)
         kClass == LocalDateTime::class -> LocalDateTime.of(buildDummy(LocalDate::class), buildDummy(LocalTime::class))
         kClass == OffsetTime::class -> OffsetTime.of(buildDummy(LocalTime::class), buildDummy(ZoneOffset::class))
@@ -115,5 +115,3 @@ internal fun <T> buildDummy(
 private fun KType.argumentType(index: Int): KType = arguments[index].type ?: Any::class.createType()
 
 private fun nextLong(chronoField: ChronoField): Long = Random.nextLong(chronoField.range().largestMinimum..chronoField.range().smallestMaximum)
-
-private fun nextInt(chronoField: ChronoField): Int = nextLong(chronoField).toInt()
