@@ -3,7 +3,7 @@
 [![CI](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml/badge.svg)](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml)
 [![license](https://img.shields.io/github/license/seppelandrio/kotlin-dummy-builder?color=yellow)](https://www.apache.org/licenses/LICENSE-2.0)
 
-A lightweight Kotlin/ Java library for generating dummy objects based on reflection for testing and prototyping purposes.
+A lightweight Kotlin library for generating dummy objects based on reflection for testing and prototyping purposes.
 
 This library recursively creates dummy instances of classes by using reflection to call their constructors with default or random arguments.
 It supports various types, including primitives, collections, generics and custom classes.
