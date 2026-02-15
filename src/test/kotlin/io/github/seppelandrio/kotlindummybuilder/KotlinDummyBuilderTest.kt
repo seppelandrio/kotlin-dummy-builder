@@ -188,7 +188,7 @@ class KotlinDummyBuilderTest {
             fun `should apply overwrite to default dummy`() {
                 val d = default<Clazz>(
                     typeOverwrites = setOf(
-                        TypeOverwrite(String::class, "overwritten"),
+                        TypeOverwrite(String::class) { "overwritten" },
                     ),
                 )
 
@@ -200,7 +200,7 @@ class KotlinDummyBuilderTest {
             fun `should apply overwrite to random dummy`() {
                 val d = random<Clazz>(
                     typeOverwrites = setOf(
-                        TypeOverwrite(String::class, "overwritten"),
+                        TypeOverwrite(String::class, { "overwritten" }),
                     ),
                 )
 

@@ -31,8 +31,9 @@ import kotlin.reflect.KProperty1
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
  * val myDummy = default<MyClass>(
- *   typeOverwrites = mapOf(
- *     String::class to "OverwrittenString",
+ *   typeOverwrites = setOf(
+ *     TypeOverwrite(String::class) { "OverwrittenString" },
+ *     TypeOverwrite(Int::class) { Random.nextInt(0, 5) },
  *   ),
  * )
  * ```
@@ -81,7 +82,8 @@ inline fun <reified T : Any> default(
  * ```kotlin
  * val myDummy = default<MyClass>(
  *   typeOverwrites = setOf(
- *     TypeOverwrite(String::class, "OverwrittenString"),
+ *     TypeOverwrite(String::class) { "OverwrittenString" },
+ *     TypeOverwrite(Int::class) { Random.nextInt(0, 5) },
  *   ),
  * )
  * ```
@@ -100,7 +102,7 @@ inline fun <reified T : Any> default(
     randomize = false,
     packageNameForChildClassLookup = packageNameForChildClassLookup,
     argumentOverwrites = argumentOverwrites,
-    typeOverwrites = typeOverwrites.associate { it.type to it.value },
+    typeOverwrites = typeOverwrites,
 )
 
 /**
@@ -129,8 +131,9 @@ inline fun <reified T : Any> default(
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
  * val myDummy = random<MyClass>(
- *   typeOverwrites = mapOf(
- *     String::class to "OverwrittenString",
+ *   typeOverwrites = setOf(
+ *     TypeOverwrite(String::class) { "OverwrittenString" },
+ *     TypeOverwrite(Int::class) { Random.nextInt(0, 5) },
  *   ),
  * )
  * ```
@@ -179,7 +182,8 @@ inline fun <reified T : Any> random(
  * ```kotlin
  * val myDummy = random<MyClass>(
  *   typeOverwrites = setOf(
- *     TypeOverwrite(String::class, "OverwrittenString"),
+ *     TypeOverwrite(String::class) { "OverwrittenString" },
+ *     TypeOverwrite(Int::class) { Random.nextInt(0, 5) },
  *   ),
  * )
  * ```
@@ -198,7 +202,7 @@ inline fun <reified T : Any> random(
     randomize = true,
     packageNameForChildClassLookup = packageNameForChildClassLookup,
     argumentOverwrites = argumentOverwrites,
-    typeOverwrites = typeOverwrites.associate { it.type to it.value },
+    typeOverwrites = typeOverwrites,
 )
 
 /**
@@ -209,7 +213,7 @@ fun <T : Any> buildDummy(
     randomize: Boolean,
     packageNameForChildClassLookup: String,
     argumentOverwrites: Map<String, Any?>,
-    typeOverwrites: Map<KClass<*>, Any>,
+    typeOverwrites: Set<TypeOverwrite<*>>,
 ): T = buildDummy(
     type = typeReference.type,
     randomize = randomize,
@@ -218,12 +222,16 @@ fun <T : Any> buildDummy(
     typeOverwrites = typeOverwrites,
 )
 
-data class ArgumentOverwrite<T, V>(
+class ArgumentOverwrite<T, V>(
     val argument: KProperty1<T, V>,
     val value: V,
 )
 
-data class TypeOverwrite<T : Any>(
+class TypeOverwrite<T : Any>(
     val type: KClass<T>,
-    val value: T,
-)
+    val getValue: () -> T,
+) {
+    override fun equals(other: Any?): Boolean = other is TypeOverwrite<*> && type == other.type
+
+    override fun hashCode(): Int = type.hashCode()
+}
