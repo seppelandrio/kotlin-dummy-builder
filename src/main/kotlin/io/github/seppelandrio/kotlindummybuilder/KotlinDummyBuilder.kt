@@ -10,17 +10,17 @@ import kotlin.reflect.KProperty1
  *
  * Default usage:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>()
+ * val myDummy = default<MyClass>()
  * ```
  *
  * To customize constructor arguments you can either use the copy operator of data classes (preferred):
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+ * val myDummy = default<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
  * ```
  *
  * or use [argumentOverwrites]:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>(
+ * val myDummy = default<MyClass>(
  *   argumentOverwrites = setOf(
  *     ArgumentOverwrite(MyClass::someProperty, "CustomValue"),
  *     ArgumentOverwrite(MyClass::anotherProperty, 42),
@@ -30,7 +30,7 @@ import kotlin.reflect.KProperty1
  *
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>(
+ * val myDummy = default<MyClass>(
  *   typeOverwrites = mapOf(
  *     String::class to "OverwrittenString",
  *   ),
@@ -42,11 +42,11 @@ import kotlin.reflect.KProperty1
  * If your type or its nested properties are abstract classes or interfaces, you may need to specify
  * [packageNameForChildClassLookup] to help the dummy builder find concrete implementations. By default, it uses the package of [T].
  */
-inline fun <reified T : Any> defaultDummy(
+inline fun <reified T : Any> default(
     packageNameForChildClassLookup: String = T::class.java.packageName,
     argumentOverwrites: Set<ArgumentOverwrite<T, *>> = emptySet(),
     typeOverwrites: Set<TypeOverwrite<*>> = emptySet(),
-): T = defaultDummy<T>(
+): T = default<T>(
     packageNameForChildClassLookup = packageNameForChildClassLookup,
     argumentOverwrites = argumentOverwrites.associate { it.argument.name to it.value },
     typeOverwrites = typeOverwrites,
@@ -54,22 +54,22 @@ inline fun <reified T : Any> defaultDummy(
 
 /**
  * Creates a dummy instance of the specified type [T] with default values.
- * If you want to specify argument or type overwrites and want to be type safe as possible use the typed version of [defaultDummy].
+ * If you want to specify argument or type overwrites and want to be type safe as possible use the typed version of [default].
  * This method is more flexible as you can overwrite arguments based on their name even though their property is not public.
  *
  * Default usage:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>()
+ * val myDummy = default<MyClass>()
  * ```
  *
  * To customize constructor arguments you can either use the copy operator of data classes (preferred):
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+ * val myDummy = default<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
  * ```
  *
  * or use [argumentOverwrites]:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>(
+ * val myDummy = default<MyClass>(
  *   argumentOverwrites = mapOf(
  *     "someProperty" to "CustomValue",
  *     "anotherProperty" to 42,
@@ -79,7 +79,7 @@ inline fun <reified T : Any> defaultDummy(
  *
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
- * val myDummy = defaultDummy<MyClass>(
+ * val myDummy = default<MyClass>(
  *   typeOverwrites = setOf(
  *     TypeOverwrite(String::class, "OverwrittenString"),
  *   ),
@@ -91,7 +91,7 @@ inline fun <reified T : Any> defaultDummy(
  * If your type or its nested properties are abstract classes or interfaces, you may need to specify
  * [packageNameForChildClassLookup] to help the dummy builder find concrete implementations. By default, it uses the package of [T].
  */
-inline fun <reified T : Any> defaultDummy(
+inline fun <reified T : Any> default(
     packageNameForChildClassLookup: String = T::class.java.packageName,
     argumentOverwrites: Map<String, Any?>,
     typeOverwrites: Set<TypeOverwrite<*>> = emptySet(),
@@ -108,17 +108,17 @@ inline fun <reified T : Any> defaultDummy(
  *
  * Default usage:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>()
+ * val myDummy = random<MyClass>()
  * ```
  *
  * To customize constructor arguments you can either use the copy operator of data classes (preferred):
  * ```kotlin
- * val myDummy = randomDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+ * val myDummy = random<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
  * ```
  *
  * or use [argumentOverwrites]:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>(
+ * val myDummy = random<MyClass>(
  *   argumentOverwrites = setOf(
  *     ArgumentOverwrite(MyClass::someProperty, "CustomValue"),
  *     ArgumentOverwrite(MyClass::anotherProperty, 42),
@@ -128,7 +128,7 @@ inline fun <reified T : Any> defaultDummy(
  *
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>(
+ * val myDummy = random<MyClass>(
  *   typeOverwrites = mapOf(
  *     String::class to "OverwrittenString",
  *   ),
@@ -140,11 +140,11 @@ inline fun <reified T : Any> defaultDummy(
  * If your type or its nested properties are abstract classes or interfaces, you may need to specify
  * [packageNameForChildClassLookup] to help the dummy builder find concrete implementations. By default, it uses the package of [T].
  */
-inline fun <reified T : Any> randomDummy(
+inline fun <reified T : Any> random(
     packageNameForChildClassLookup: String = T::class.java.packageName,
     argumentOverwrites: Set<ArgumentOverwrite<T, *>> = emptySet(),
     typeOverwrites: Set<TypeOverwrite<*>> = emptySet(),
-): T = randomDummy<T>(
+): T = random<T>(
     packageNameForChildClassLookup = packageNameForChildClassLookup,
     argumentOverwrites = argumentOverwrites.associate { it.argument.name to it.value },
     typeOverwrites = typeOverwrites,
@@ -152,22 +152,22 @@ inline fun <reified T : Any> randomDummy(
 
 /**
  * Creates a dummy instance of the specified type [T] with random values.
- * If you want to specify argument or type overwrites and want to be type safe as possible use the typed version of [defaultDummy].
+ * If you want to specify argument or type overwrites and want to be type safe as possible use the typed version of [default].
  * This method is more flexible as you can overwrite arguments based on their name even though their property is not public.
  *
  * Default usage:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>()
+ * val myDummy = random<MyClass>()
  * ```
  *
  * To customize constructor arguments you can either use the copy operator of data classes (preferred):
  * ```kotlin
- * val myDummy = randomDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+ * val myDummy = random<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
  * ```
  *
  * or use [argumentOverwrites]:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>(
+ * val myDummy = random<MyClass>(
  *   argumentOverwrites = mapOf(
  *     "someProperty" to "CustomValue",
  *     "anotherProperty" to 42,
@@ -177,7 +177,7 @@ inline fun <reified T : Any> randomDummy(
  *
  * To provide specific implementations for certain types across every (nested) property in this dummy, use [typeOverwrites]:
  * ```kotlin
- * val myDummy = randomDummy<MyClass>(
+ * val myDummy = random<MyClass>(
  *   typeOverwrites = setOf(
  *     TypeOverwrite(String::class, "OverwrittenString"),
  *   ),
@@ -189,7 +189,7 @@ inline fun <reified T : Any> randomDummy(
  * If your type or its nested properties are abstract classes or interfaces, you may need to specify
  * [packageNameForChildClassLookup] to help the dummy builder find concrete implementations. By default, it uses the package of [T].
  */
-inline fun <reified T : Any> randomDummy(
+inline fun <reified T : Any> random(
     packageNameForChildClassLookup: String = T::class.java.packageName,
     argumentOverwrites: Map<String, Any?>,
     typeOverwrites: Set<TypeOverwrite<*>> = emptySet(),

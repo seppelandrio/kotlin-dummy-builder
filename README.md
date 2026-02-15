@@ -20,31 +20,31 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 | Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
 
 ## Usage
-> ℹ️ You can either generate dummies with default values by calling the `defaultDummy` function or with random values by calling the `randomDummy` function.
+> ℹ️ You can either generate dummies with default values by calling the `default` function or with random values by calling the `random` function.
 > Both functions have the same parameters and behavior, except for the values they generate.
 > 
-> For the following section we will use `defaultDummy` for demonstration purposes, but the same applies to `randomDummy` as well.
+> For the following section we will use `default` for demonstration purposes, but the same applies to `random` as well.
 
 Default usage
 ```kotlin
-val myDummy = defaultDummy<MyClass>()
+val myDummy = default<MyClass>()
 ```
 
 To customize constructor arguments you can either use the copy operator of data classes (preferred)
 ```kotlin
-val myDummy = defaultDummy<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
+val myDummy = default<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
 ```
 
 or use `argumentOverwrites` to overwrite constructor arguments either by property reference or by name
 ```kotlin
-val myDummy = defaultDummy<MyClass>(
+val myDummy = default<MyClass>(
     argumentOverwrites = setOf(
         ArgumentOverwrite(MyClass::someProperty, "CustomValue"),
         ArgumentOverwrite(MyClass::anotherProperty, 42),
     ),
 )
 
-val myDummy2 = defaultDummy<MyClass>(
+val myDummy2 = default<MyClass>(
     argumentOverwrites = mapOf(
         "someProperty" to "CustomValue",
         "anotherProperty" to 42,
@@ -54,7 +54,7 @@ val myDummy2 = defaultDummy<MyClass>(
 
 To provide specific implementations for certain types across every (nested) property in this dummy, use `typeOverwrites`
 ```kotlin
-val myDummy = defaultDummy<MyClass>(
+val myDummy = default<MyClass>(
   typeOverwrites = setOf(
     TypeOverwrite(String::class, "OverwrittenString"),
   ),
