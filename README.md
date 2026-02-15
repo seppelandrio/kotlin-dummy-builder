@@ -19,6 +19,17 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 | Gradle Kts | `testImplementation("io.github.seppelandrio:kotlin-dummy-builder:x.y.z")`                                                                                                                  |
 | Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
 
+> **⚠️ Compatibility**
+>
+> Since this library makes extensive use of `kotlin-reflect`, and many related issues are resolved with each new Kotlin language release,
+> it targets the latest Kotlin language version by default (currently 2.3).
+>
+> As a result, your project must use at least the same Kotlin language version, because libraries compiled with newer Kotlin language versions are not compatible with projects with older Kotlin language version.
+> For the best compatibility and stability, we recommend upgrading your Kotlin version so you can use the default library release: `x.y.z`.
+>
+> If upgrading is not possible, a backwards-compatible variant is available for Kotlin 1.9+ (`x.y.z-kotlin1.9`).
+> It provides the same feature set, but compatibility might be slightly reduced due to missing `kotlin-reflect` features or unresolved issues in older Kotlin versions.
+
 ## Usage
 > ℹ️ You can either generate dummies with default values by calling the `default` function or with random values by calling the `random` function.
 > Both functions have the same parameters and behavior, except for the values they generate.
