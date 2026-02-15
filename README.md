@@ -56,7 +56,8 @@ To provide specific implementations for certain types across every (nested) prop
 ```kotlin
 val myDummy = default<MyClass>(
   typeOverwrites = setOf(
-    TypeOverwrite(String::class, "OverwrittenString"),
+      TypeOverwrite(String::class) { "OverwrittenString" },
+      TypeOverwrite(Int::class) { Random.nextInt(0, 6) },
   ),
 )
 ```

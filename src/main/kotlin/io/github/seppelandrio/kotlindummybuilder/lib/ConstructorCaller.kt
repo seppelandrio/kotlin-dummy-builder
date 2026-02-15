@@ -1,5 +1,6 @@
 package io.github.seppelandrio.kotlindummybuilder.lib
 
+import io.github.seppelandrio.kotlindummybuilder.TypeOverwrite
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
@@ -16,7 +17,7 @@ fun <T : Any> KClass<T>.callConstructor(
     randomize: Boolean,
     packageNameForChildClassLookup: String,
     argumentOverwrites: Map<String, Any?>,
-    typeOverwrites: Map<KClass<*>, Any>,
+    typeOverwrites: Set<TypeOverwrite<*>>,
 ): T {
     val constructor = constructors
         .sortedBy { constructor -> constructor.parameters.size }

@@ -1,5 +1,6 @@
 package io.github.seppelandrio.kotlindummybuilder.lib
 
+import io.github.seppelandrio.kotlindummybuilder.TypeOverwrite
 import java.lang.reflect.Array
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -28,7 +29,7 @@ internal fun <T> buildDummy(
     randomize: Boolean,
     packageNameForChildClassLookup: String,
     argumentOverwrites: Map<String, Any?>,
-    typeOverwrites: Map<KClass<*>, Any>,
+    typeOverwrites: Set<TypeOverwrite<*>>,
 ): T {
     if (type.isMarkedNullable && (!randomize || Random.nextBoolean())) return null as T
 
@@ -57,9 +58,10 @@ internal fun <T> buildDummy(
         return array
     }
 
+    val typeOverwrite = typeOverwrites.find { it.type == kClass }
     @Suppress("USELESS_CAST")
     return when {
-        kClass in typeOverwrites -> typeOverwrites[kClass]
+        typeOverwrite != null -> typeOverwrite.getValue()
         kClass == Boolean::class -> if (randomize) Random.nextBoolean() else false
         kClass == Byte::class -> if (randomize) Random.nextBytes(1)[0] else 0.toByte()
         kClass == Short::class -> if (randomize) Random.nextInt().toShort() else 0.toShort()
