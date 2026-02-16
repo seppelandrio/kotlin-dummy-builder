@@ -25,6 +25,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSuperclassOf
+import kotlin.time.Duration.Companion.nanoseconds
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T> buildDummy(
@@ -85,7 +86,8 @@ internal fun <T> buildDummy(
         kClass == OffsetTime::class -> OffsetTime.of(buildDummy(LocalTime::class), buildDummy(ZoneOffset::class))
         kClass == OffsetDateTime::class -> OffsetDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
         kClass == ZonedDateTime::class -> ZonedDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
-        kClass == Duration::class -> Duration.ofNanos(buildDummy(Long::class))
+        kClass == Duration::class -> Duration.ofNanos(if (randomize) Random.nextLong(0..Long.MAX_VALUE) else 0)
+        kClass == kotlin.time.Duration::class -> if (randomize) Random.nextLong(0..Long.MAX_VALUE).nanoseconds else 0.nanoseconds
         kClass == Currency::class -> if (randomize) Currency.getAvailableCurrencies().random() else Currency.getInstance("USD")
         kClass == Locale::class -> if (randomize) Locale.getAvailableLocales().random() else Locale.US
         kClass == KClass::class -> type.argumentTypeClassifierOfConcreteSubclassIfOut(0, packageNameForChildClassLookup, randomize)
