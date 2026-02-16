@@ -18,6 +18,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.Currency
 import java.util.stream.Stream
+import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
@@ -53,7 +54,31 @@ class KotlinDummyBuilderTest {
         // endregion
         // region classes
         *TestCases.alwaysDefault("KClass", Int::class),
-        *TestCases.alwaysDefault("JavaClass", String::class.java),
+        *TestCases.defaultAndRandom<KClass<out Interface>>(
+            typeDescription = "KClass<out Interface>",
+            expectedDefaultValue = Interface.Impl1::class,
+            buildDefaultDummy = { default(packageNameForChildClassLookup = Interface::class.java.packageName) },
+            buildRandomDummy = { random(packageNameForChildClassLookup = Interface::class.java.packageName) },
+        ),
+        *TestCases.defaultAndRandom<KClass<out SealedInterface>>(
+            typeDescription = "KClass<out SealedInterface>",
+            expectedDefaultValue = SealedInterface.Impl1::class,
+            buildDefaultDummy = { default(packageNameForChildClassLookup = SealedInterface::class.java.packageName) },
+            buildRandomDummy = { random(packageNameForChildClassLookup = SealedInterface::class.java.packageName) },
+        ),
+        *TestCases.alwaysDefault("Class", String::class.java),
+        *TestCases.defaultAndRandom<Class<out Interface>>(
+            typeDescription = "Class<out Interface>",
+            expectedDefaultValue = Interface.Impl1::class.java,
+            buildDefaultDummy = { default(packageNameForChildClassLookup = Interface::class.java.packageName) },
+            buildRandomDummy = { random(packageNameForChildClassLookup = Interface::class.java.packageName) },
+        ),
+        *TestCases.defaultAndRandom<Class<out SealedInterface>>(
+            typeDescription = "Class<out SealedInterface>",
+            expectedDefaultValue = SealedInterface.Impl1::class.java,
+            buildDefaultDummy = { default(packageNameForChildClassLookup = SealedInterface::class.java.packageName) },
+            buildRandomDummy = { random(packageNameForChildClassLookup = SealedInterface::class.java.packageName) },
+        ),
         // endregion
         // region enums
         *TestCases.defaultAndRandom("Enum", ExampleEnum.A),
@@ -105,14 +130,19 @@ class KotlinDummyBuilderTest {
             buildDefaultDummy = { default<Function2<String, Int?, String>>()("input", null) },
             buildRandomDummy = { random<Function2<String, Int?, String>>()("input", null) },
         ),
-        *TestCases.defaultAndRandom("lambda (String, Int?) -> String?", "", {
-            default<
-                (
-                    String,
-                    Int?,
-                ) -> String?,
-            >()("input", null)!!
-        }, { random<(String, Int?) -> String?>()("input", null)!! }),
+        *TestCases.defaultAndRandom(
+            typeDescription = "lambda (String, Int?) -> String?",
+            expectedDefaultValue = "",
+            buildDefaultDummy = {
+                default<
+                    (
+                        String,
+                        Int?,
+                    ) -> String?,
+                >()("input", null)!!
+            },
+            buildRandomDummy = { random<(String, Int?) -> String?>()("input", null)!! },
+        ),
         *TestCases.defaultAndRandom(
             typeDescription = "function (String, Int?) -> String?",
             expectedDefaultValue = "",
