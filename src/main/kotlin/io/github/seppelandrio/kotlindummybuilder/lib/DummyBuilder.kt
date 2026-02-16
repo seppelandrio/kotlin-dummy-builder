@@ -113,7 +113,7 @@ internal fun <T> buildDummy(
         Function::class.isSuperclassOf(kClass) -> throw IllegalArgumentException("Cannot create dummy for function type as kotlin does not capture the generic type information: $type.")
         kClass.isSealed -> buildDummy(kClass.sealedSubclasses.randomOrFirst())
         kClass.isAbstract -> buildDummy(kClass.concreteSubclass(packageNameForChildClassLookup, randomize))
-        else -> kClass.callConstructor(type, randomize, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
+        else -> kClass.createObject(type, randomize, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
     } as T
 }
 

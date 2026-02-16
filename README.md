@@ -150,11 +150,12 @@ For custom types, the library will try to find a constructor and call it with du
 
 Additionally, it supports the following features
 
-| Feature                       | Behavior                                                                                                                                    |
-|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| Abstract Classes/ Interfaces  | it will try to find a concrete implementation the package of the generated dummy object or if specified in `packageNameForChildClassLookup` |
-| Sealed Classes and Interfaces | it will use a non-abstract subclass and use it to generate the dummy                                                                        |
-| Generics                      | it will infer the type arguments from the context and use them to generate the dummy                                                        |
-| Value Classes                 | it will generate a dummy for its underlying type and use it to create an instance of the value class                                        |
-| Objects                       | it will return the object instance                                                                                                          |
-| Private Constructors          | it will try to make it accessible and use it to generate the dummy                                                                          |
+| Feature                            | Behavior                                                                                                                                    |
+|------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Abstract Classes/ Interfaces       | it will try to find a concrete implementation the package of the generated dummy object or if specified in `packageNameForChildClassLookup` |
+| Sealed Classes and Interfaces      | it will use a non-abstract subclass and use it to generate the dummy                                                                        |
+| Generics                           | it will infer the type arguments from the context and use them to generate the dummy                                                        |
+| Value Classes                      | it will generate a dummy for its underlying type and use it to create an instance of the value class                                        |
+| Objects                            | it will return the object instance                                                                                                          |
+| Companion Object Creator Functions | it will use the companion object creator function to generate the dummy if no public constructor found                                      |
+| Private Constructors               | it will try to make it accessible and use it to generate the dummy if no public constructor or companion object creator function found      |
