@@ -16,6 +16,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoField
 import java.util.Currency
+import java.util.Locale
 import java.util.stream.Stream
 import kotlin.random.Random
 import kotlin.random.nextLong
@@ -86,6 +87,7 @@ internal fun <T> buildDummy(
         kClass == ZonedDateTime::class -> ZonedDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
         kClass == Duration::class -> Duration.ofNanos(buildDummy(Long::class))
         kClass == Currency::class -> if (randomize) Currency.getAvailableCurrencies().random() else Currency.getInstance("USD")
+        kClass == Locale::class -> if (randomize) Locale.getAvailableLocales().random() else Locale.US
         kClass == KClass::class -> type.argumentTypeClassifierOfConcreteSubclassIfOut(0, packageNameForChildClassLookup, randomize)
         kClass == Class::class -> type.argumentTypeClassifierOfConcreteSubclassIfOut(0, packageNameForChildClassLookup, randomize).java
         kClass.java.isEnum -> kClass.java.enumConstants.toList().randomOrFirst()

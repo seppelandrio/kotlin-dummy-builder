@@ -17,6 +17,7 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.Currency
+import java.util.Locale
 import java.util.stream.Stream
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
@@ -51,6 +52,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("Duration", Duration.ZERO),
         *TestCases.defaultAndRandom("kotlin.time.Duration", kotlin.time.Duration.ZERO),
         *TestCases.defaultAndRandom("Currency", Currency.getInstance("USD")),
+        *TestCases.defaultAndRandom("Locale", Locale.US),
         // endregion
         // region classes
         *TestCases.alwaysDefault("KClass", Int::class),
