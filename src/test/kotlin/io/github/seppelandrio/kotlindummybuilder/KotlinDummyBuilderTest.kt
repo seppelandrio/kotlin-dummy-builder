@@ -158,6 +158,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("DataClass", DataClass("", null, DataClass.Nested(false))),
         *TestCases.defaultAndRandom("GenericClass", GenericClass(GenericClass.Nested(""), GenericClass.Nested(0))),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
+        *TestCases.defaultAndRandom("ClassWithPrivateConstructorAndCompanion", "_companion", { default<ClassWithPrivateConstructorAndCompanion>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.alwaysDefault("Object", Object),
         // endregion
         // region abstract types
@@ -341,6 +342,16 @@ class KotlinDummyBuilderTest {
         override fun equals(other: Any?) = other is ClassWithPrivateConstructor && s == other.s
 
         override fun hashCode() = s.hashCode()
+    }
+
+    class ClassWithPrivateConstructorAndCompanion private constructor(val s: String) {
+        override fun equals(other: Any?) = other is ClassWithPrivateConstructor && s == other.s
+
+        override fun hashCode() = s.hashCode()
+
+        companion object {
+            fun of(s: String) = ClassWithPrivateConstructorAndCompanion("${s}_companion")
+        }
     }
 
     object Object
