@@ -72,7 +72,7 @@ internal fun <T> buildDummy(
         kClass == Long::class -> if (randomize) Random.nextLong() else 0L
         kClass == Float::class -> if (randomize) Random.nextFloat() else 0.0f
         kClass == Double::class -> if (randomize) Random.nextDouble() else 0.0
-        kClass == Char::class -> if (randomize) Random.nextInt(32, 127).toChar() else 'a'
+        kClass == Char::class -> if (randomize) supportedChars.random() else 'a'
         kClass == String::class -> buildDummy(object : TypeReference<List<Char>>() {}).joinToString("")
         kClass == BigInteger::class -> BigInteger.valueOf(buildDummy(Long::class))
         kClass == BigDecimal::class -> BigDecimal.valueOf(buildDummy(Long::class))
@@ -114,6 +114,8 @@ internal fun <T> buildDummy(
         else -> kClass.callConstructor(type, randomize, packageNameForChildClassLookup, argumentOverwrites, typeOverwrites)
     } as T
 }
+
+private val supportedChars: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf(' ', '-', '_')
 
 private fun KType.argumentType(index: Int): KType = arguments[index].type ?: Any::class.createType()
 
