@@ -21,6 +21,7 @@ import kotlin.random.Random
 import kotlin.random.nextLong
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
+import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSuperclassOf
 
@@ -85,8 +86,8 @@ internal fun <T> buildDummy(
         kClass == ZonedDateTime::class -> ZonedDateTime.of(buildDummy(LocalDateTime::class), buildDummy(ZoneOffset::class))
         kClass == Duration::class -> Duration.ofNanos(buildDummy(Long::class))
         kClass == Currency::class -> if (randomize) Currency.getAvailableCurrencies().random() else Currency.getInstance("USD")
-        kClass == KClass::class -> type.argumentType(0).classifier as KClass<*>
-        kClass == Class::class -> (type.argumentType(0).classifier as KClass<*>).java
+        kClass == KClass::class -> type.argumentTypeClassifierOfConcreteSubclassIfOut(0, packageNameForChildClassLookup, randomize)
+        kClass == Class::class -> type.argumentTypeClassifierOfConcreteSubclassIfOut(0, packageNameForChildClassLookup, randomize).java
         kClass.java.isEnum -> kClass.java.enumConstants.toList().randomOrFirst()
         kClass.objectInstance != null -> kClass.objectInstance
         kClass == ByteArray::class -> ByteArray(nextCollectionSizeOr0()) { buildDummy(Byte::class) }
@@ -113,5 +114,17 @@ internal fun <T> buildDummy(
 }
 
 private fun KType.argumentType(index: Int): KType = arguments[index].type ?: Any::class.createType()
+
+private fun KType.argumentTypeClassifierOfConcreteSubclassIfOut(
+    index: Int,
+    packageNameForChildClassLookup: String,
+    randomize: Boolean,
+): KClass<*> {
+    val classifier = argumentType(index).classifier as KClass<*>
+    return when (arguments[index].variance) {
+        KVariance.OUT -> classifier.concreteSubclass(packageNameForChildClassLookup, randomize)
+        else -> classifier
+    }
+}
 
 private fun nextLong(chronoField: ChronoField): Long = Random.nextLong(chronoField.range().largestMinimum..chronoField.range().smallestMaximum)
