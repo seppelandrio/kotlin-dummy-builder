@@ -1,4 +1,5 @@
 # Kotlin Dummy Builder
+
 [![version](https://img.shields.io/github/v/release/seppelandrio/kotlin-dummy-builder)](https://github.com/seppelandrio/kotlin-dummy-builder/releases)
 [![CI](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml/badge.svg)](https://github.com/seppelandrio/kotlin-dummy-builder/actions/workflows/test.yml)
 [![license](https://img.shields.io/github/license/seppelandrio/kotlin-dummy-builder?color=yellow)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -11,6 +12,7 @@ You can also customize the generated dummy objects by providing specific values 
 For a complete list of supported types and features, please refer to the [features section](#features).
 
 ## Installation
+
 All you need to get started is to add a dependency to `Kotlin Dummy Builder` in your project:
 
 | Approach   | Instruction                                                                                                                                                                                |
@@ -30,6 +32,7 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 > It provides the same feature set, but compatibility might be slightly reduced due to missing `kotlin-reflect` features or unresolved issues in older Kotlin versions.
 
 ## Usage
+
 You can either generate dummies with default values by calling the `default` function or with random values by calling the `random` function.
 Both functions have the same parameters and behavior, except for the values they generate.
 
@@ -37,16 +40,19 @@ Both functions have the same parameters and behavior, except for the values they
 > For the following section we will use `default` for demonstration purposes, but the same applies to `random` as well.
 
 Default usage
+
 ```kotlin
 val myDummy = default<MyClass>()
 ```
 
 To customize the dummy you can either use the copy operator of data classes (preferred)
+
 ```kotlin
 val myDummy = default<MyClass>().copy(someProperty = "CustomValue", anotherProperty = 42)
 ```
 
 or use `argumentOverwrites` to overwrite constructor arguments either by property reference or by name
+
 ```kotlin
 val myDummy = default<MyClass>(
     argumentOverwrites = setOf(
@@ -64,12 +70,13 @@ val myDummy2 = default<MyClass>(
 ```
 
 To provide specific values for certain types across every (nested) property in this dummy, use `typeOverwrites`
+
 ```kotlin
 val myDummy = default<MyClass>(
-  typeOverwrites = setOf(
-      TypeOverwrite(String::class) { "OverwrittenString" },
-      TypeOverwrite(Int::class) { Random.nextInt(0, 6) },
-  ),
+    typeOverwrites = setOf(
+        TypeOverwrite(String::class) { "OverwrittenString" },
+        TypeOverwrite(Int::class) { Random.nextInt(0, 6) },
+    ),
 )
 ```
 
@@ -84,6 +91,7 @@ By default, it uses the package of the provided class.
 This library generates dummy by calling constructors based on reflection and so it is capable of generating dummy for all nested classes and properties as long as they have a constructor that can be called with dummy values.
 
 ### Simple Types
+
 The library supports the following types out of the box
 
 | Type                 | Default Value                     |
@@ -118,6 +126,7 @@ The library supports the following types out of the box
 | Enum                 | `first value of the enum`         |
 
 ## Collection Types
+
 The library supports the following collection types out of the box
 
 | Type                | Default Value          |
@@ -138,24 +147,25 @@ The library supports the following collection types out of the box
 | Stream<T>           | `Stream.empty<T>()`    |
 | (Mutable)Map\<K, V> | `mutableMapOf<K, V>()` |
 
-
 ## Function Types
+
 The library supports function types by generating a lambda that returns a dummy value of the return type.
 
 > [!WARNING]
 > Kotlin reflection looses type parameters for functions with more than 2 arguments, so the library will throw an exception when generating dummies for them.
 
 ## Custom Types
+
 For custom types, the library will try to find a constructor and call it with dummy values for its parameters.
 
 Additionally, it supports the following features
 
-| Feature                            | Behavior                                                                                                                                    |
-|------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| Abstract Classes/ Interfaces       | it will try to find a concrete implementation the package of the generated dummy object or if specified in `packageNameForChildClassLookup` |
-| Sealed Classes and Interfaces      | it will use a non-abstract subclass and use it to generate the dummy                                                                        |
-| Generics                           | it will infer the type arguments from the context and use them to generate the dummy                                                        |
-| Value Classes                      | it will generate a dummy for its underlying type and use it to create an instance of the value class                                        |
-| Objects                            | it will return the object instance                                                                                                          |
-| Companion Object Creator Functions | it will use the companion object creator function to generate the dummy if no public constructor found                                      |
-| Private Constructors               | it will try to make it accessible and use it to generate the dummy if no public constructor or companion object creator function found      |
+| Feature                            | Behavior                                                                                                                                                                                                                                                                   |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Abstract Classes/ Interfaces       | it will try to find a concrete implementation in the package of the generated dummy object or if specified in `packageNameForChildClassLookup`. If nothing found it will search in the parent packages. If still nothing found it will throw an `IllegalArgumentException` |
+| Sealed Classes and Interfaces      | it will use a non-abstract subclass and use it to generate the dummy                                                                                                                                                                                                       |
+| Generics                           | it will infer the type arguments from the context and use them to generate the dummy                                                                                                                                                                                       |
+| Value Classes                      | it will generate a dummy for its underlying type and use it to create an instance of the value class                                                                                                                                                                       |
+| Objects                            | it will return the object instance                                                                                                                                                                                                                                         |
+| Companion Object Creator Functions | it will use the companion object creator function to generate the dummy if no public constructor found                                                                                                                                                                     |
+| Private Constructors               | it will try to make it accessible and use it to generate the dummy if no public constructor or companion object creator function found                                                                                                                                     |
