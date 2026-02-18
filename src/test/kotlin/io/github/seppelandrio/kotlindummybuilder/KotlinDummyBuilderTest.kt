@@ -156,7 +156,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("ValueClass", ValueClass("")),
         *TestCases.defaultAndRandom("Clazz", Clazz("", null, Clazz.Nested(""))),
         *TestCases.defaultAndRandom("DataClass", DataClass("", null, DataClass.Nested(false))),
-        *TestCases.defaultAndRandom("GenericClass", GenericClass(GenericClass.Nested(""), GenericClass.Nested(0))),
+        *TestCases.defaultAndRandom("GenericClass", GenericClass(0, GenericClass.Nested(0))),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructorAndCompanion", "_companion", { default<ClassWithPrivateConstructorAndCompanion>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.alwaysDefault("Object", Object),
@@ -358,7 +358,7 @@ class KotlinDummyBuilderTest {
 
     data class GenericClass<T>(
         val t: T,
-        val n: Nested<Int>,
+        val n: Nested<T>,
     ) {
         data class Nested<V>(val v: V)
     }
