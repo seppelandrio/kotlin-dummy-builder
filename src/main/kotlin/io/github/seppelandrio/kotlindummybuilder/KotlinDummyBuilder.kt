@@ -218,8 +218,8 @@ fun <T : Any> buildDummy(
     type = typeReference.type,
     randomize = randomize,
     packageNameForChildClassLookup = packageNameForChildClassLookup,
-    argumentOverwrites = argumentOverwrites,
     typeOverwrites = typeOverwrites,
+    argumentOverwrites = argumentOverwrites,
 )
 
 class ArgumentOverwrite<T, V>(

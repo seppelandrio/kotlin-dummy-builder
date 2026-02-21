@@ -1,6 +1,8 @@
 package io.github.seppelandrio.kotlindummybuilder.lib
 
 import io.github.seppelandrio.kotlindummybuilder.TypeOverwrite
+import java.lang.reflect.InvocationTargetException
+import kotlin.collections.firstNotNullOfOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
@@ -39,25 +41,35 @@ internal fun <T : Any> KClass<T>.createObject(
             ?.sortedBy { it.parameters.size }
             .orEmpty() as Collection<KFunction<T>>
     }
-    val creatorFunction = prioritizedConstructors.firstOrNull { it.visibility == KVisibility.PUBLIC }
-        ?: prioritizedCompanionCreators.firstOrNull { it.visibility == KVisibility.PUBLIC }
-        ?: prioritizedConstructors.firstOrNull()
-        ?: prioritizedCompanionCreators.firstOrNull()
-        ?: throw IllegalArgumentException("Cannot construct test instance for type $type as no constructor or companion method matches the provided overwrites: ${argumentOverwrites.keys}")
-    creatorFunction.isAccessible = true
-
-    val typeParameters = resolveTypeParameters(this, type.arguments)
-    val parameters = creatorFunction.parameters.map { parameter ->
-        argumentOverwrites[parameter.name] ?: buildDummy(parameter.type.resolvedType(typeParameters), randomize, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
-    }
-    return try {
-        creatorFunction.call(*parameters.toTypedArray())
-    } catch (e: IllegalArgumentException) {
+    val prioritizedCreatorFunctions = prioritizedConstructors.filter { it.visibility == KVisibility.PUBLIC } +
+        prioritizedCompanionCreators.filter { it.visibility == KVisibility.PUBLIC } +
+        prioritizedConstructors.filter { it.visibility != KVisibility.PUBLIC } +
+        prioritizedCompanionCreators.filter { it.visibility != KVisibility.PUBLIC }
+    if (prioritizedCreatorFunctions.isEmpty()) {
         throw IllegalArgumentException(
-            "Failed to create test instance for type $this with function $creatorFunction and parameters $parameters - looks like a framework bug",
-            e,
+            "Cannot construct test instance for type $type as no constructor or companion method matches the provided overwrites: ${argumentOverwrites.keys}",
         )
     }
+
+    val typeParameters = resolveTypeParameters(this, type.arguments)
+    val failedCreatorCalls = mutableListOf<Pair<String, Throwable>>()
+    return prioritizedCreatorFunctions.firstNotNullOfOrNull { creatorFunction ->
+        val parameters = creatorFunction.parameters.map { parameter ->
+            argumentOverwrites[parameter.name] ?: buildDummy(parameter.type.resolvedType(typeParameters), randomize, packageNameForChildClassLookup, typeOverwrites)
+        }
+
+        if (!creatorFunction.isAccessible) creatorFunction.isAccessible = true
+        try {
+            creatorFunction.call(*parameters.toTypedArray())
+        } catch (e: InvocationTargetException) {
+            failedCreatorCalls += Pair("$creatorFunction with parameters [${parameters.joinToString { if (it is String) "\"$it\"" else "$it" }}]", e.targetException)
+            null
+        }
+    } ?: throw IllegalArgumentException(
+        "Failed to create test instance for type $this.\n\n" +
+            "The following functions have been tried:\n" +
+            failedCreatorCalls.joinToString("\n") { (d, e) -> "- $d: ${e::class.qualifiedName}(\"${e.message}\")" },
+    )
 }
 
 private fun KFunction<*>.hasAllArgumentOverwrites(argumentOverwrites: Map<String, Any?>): Boolean = argumentOverwrites.keys.all { propertyName -> propertyName in parameters.map { it.name } }

@@ -32,8 +32,8 @@ internal fun <T> buildDummy(
     type: KType,
     randomize: Boolean,
     packageNameForChildClassLookup: String,
-    argumentOverwrites: Map<String, Any?>,
     typeOverwrites: Set<TypeOverwrite<*>>,
+    argumentOverwrites: Map<String, Any?> = emptyMap(),
 ): T {
     if (type.isMarkedNullable && (!randomize || Random.nextBoolean())) return null as T
 
@@ -42,7 +42,7 @@ internal fun <T> buildDummy(
         else -> throw IllegalArgumentException("Cannot create dummy for type $type as type is not a KClass")
     } as KClass<T & Any>
 
-    fun <S> buildDummy(type: KType): S = buildDummy(type, randomize, packageNameForChildClassLookup, emptyMap(), typeOverwrites)
+    fun <S> buildDummy(type: KType): S = buildDummy(type, randomize, packageNameForChildClassLookup, typeOverwrites)
 
     fun <S : Any> buildDummy(clazz: KClass<S>): S = buildDummy(clazz.createType())
 
