@@ -44,7 +44,7 @@ mavenPublishing {
         name = "Kotlin Dummy Builder"
         description = "A lightweight Kotlin/ Java library for generating dummy objects based on reflection for testing and prototyping purposes."
         inceptionYear = "2026"
-        url = "https://github.com/username/mylibrary/"
+        url = "https://github.com/seppelandrio/kotlin-dummy-builder"
         licenses {
             license {
                 name = "The Apache License, Version 2.0"
