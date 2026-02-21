@@ -18,12 +18,12 @@ internal fun KClass<*>.concreteSubclass(
     randomize: Boolean,
 ): KClass<*> = getSubclassRelations(packageNameForChildClassLookup)[this]
     ?.let { concreteSubclasses -> if (randomize) concreteSubclasses.randomOrNull() else concreteSubclasses.sortedBy { it.qualifiedName }.firstOrNull() }
-    ?: (if ('.' in packageNameForChildClassLookup) concreteSubclass(packageNameForChildClassLookup.substringBeforeLast('.'), randomize) else null)
+    ?: (if (packageNameForChildClassLookup.count { it == '.' } >= 2) concreteSubclass(packageNameForChildClassLookup.substringBeforeLast('.'), randomize) else null)
     ?: throw IllegalArgumentException(
         "Cannot create dummy for abstract type $this as no concrete subclass " +
             "could be found in package $packageNameForChildClassLookup. " +
             "Please consider providing a custom packageNameForChildClassLookup " +
-            "or a property or class overwrite to help the dummy framework.",
+            "or a property or type overwrite to help the dummy framework.",
     )
 
 private val subtypesCachePerPackage: MutableMap<String, Map<KClass<*>, Set<KClass<*>>>> = mutableMapOf()
