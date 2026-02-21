@@ -22,6 +22,7 @@ import java.util.stream.Stream
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -159,6 +160,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("GenericClass", GenericClass(0, GenericClass.Nested(0))),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructorAndCompanion", "_companion", { default<ClassWithPrivateConstructorAndCompanion>().s }, { random<ClassWithPrivateConstructor>().s }),
+        *TestCases.defaultAndRandom("ClassWithInvariantThatCanBeConstructed", "0", { default<ClassWithInvariantThatCanBeConstructed>().s }, { random<ClassWithInvariantThatCanBeConstructed>().s }),
         *TestCases.alwaysDefault("Object", Object),
         // endregion
         // region abstract types
@@ -168,6 +170,22 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("SealedClass", SealedClass.Impl1(s = "")),
         // endregion
     )
+
+    @Test
+    fun `should throw meaningful exception when no suitable creator function could be found`() {
+        val exception = assertFailsWith<IllegalArgumentException> { default<ClassWithInvariantThatCannotBeConstructed>() }
+
+        assertEquals(
+            $$"""
+                Failed to create test instance for type class io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed.
+
+                The following functions have been tried:
+                - fun `<init>`(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
+                - fun io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed.Companion.of(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed$Companion@23382f76, ""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
+            """.trimIndent().replaceObjectReferences(),
+            exception.message?.replaceObjectReferences(),
+        )
+    }
 
     @Nested
     inner class FunctionsWithMoreThanTwoArguments {
@@ -363,6 +381,26 @@ class KotlinDummyBuilderTest {
         data class Nested<V>(val v: V)
     }
 
+    class ClassWithInvariantThatCanBeConstructed(val s: String) {
+        init {
+            require(s.toIntOrNull() != null) { "String should be an Int" }
+        }
+
+        companion object {
+            fun of(i: Int) = ClassWithInvariantThatCanBeConstructed(i.toString())
+        }
+    }
+
+    class ClassWithInvariantThatCannotBeConstructed(s: String) {
+        init {
+            require(s.isNotEmpty()) { "String should have more than 0 characters" }
+        }
+
+        companion object {
+            fun of(s: String) = ClassWithInvariantThatCannotBeConstructed(s)
+        }
+    }
+
     interface Interface {
         val s: String
 
@@ -400,3 +438,5 @@ class KotlinDummyBuilderTest {
     }
     // endregion
 }
+
+private fun String.replaceObjectReferences(): String = replace(Regex("@\\w{8}"), "@00000000")
