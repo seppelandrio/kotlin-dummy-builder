@@ -7,6 +7,12 @@ jobs:
     name: Release build and publish
     runs-on: macOS-latest
     steps:
+      - name: Check version format
+        run: |
+          if [[ ! ${{ github.event.release.name }} =~ ^[0-9]+\.[0-9]+\.[0-9]+(-kotlin1.9)?$ ]]; then
+            echo "Release version must be in the format X.Y.Z or X.Y.Z-kotlin1.9"
+            exit 1
+          fi
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup Java
