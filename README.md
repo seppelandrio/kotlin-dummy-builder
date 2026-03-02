@@ -104,7 +104,7 @@ The library supports the following types out of the box
 | Float                | `0.0f`                            |
 | Double               | `0.0`                             |
 | Char                 | `'a'`                             |
-| String               | `""`                              |
+| String               | `"default"`                       |
 | BigInteger           | `BigInteger.ZERO`                 |
 | BigDecimal           | `BigDecimal.ZERO`                 |
 | LocalDate            | `1970-01-01`                      |
