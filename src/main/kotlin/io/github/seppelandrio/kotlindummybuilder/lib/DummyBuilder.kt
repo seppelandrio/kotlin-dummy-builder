@@ -74,7 +74,7 @@ internal fun <T> buildDummy(
         kClass == Float::class -> if (randomize) Random.nextFloat() else 0.0f
         kClass == Double::class -> if (randomize) Random.nextDouble() else 0.0
         kClass == Char::class -> if (randomize) supportedChars.random() else 'a'
-        kClass == String::class -> buildDummy(object : TypeReference<List<Char>>() {}).joinToString("")
+        kClass == String::class -> if (randomize) buildDummy(object : TypeReference<List<Char>>() {}).joinToString("") else "default"
         kClass == BigInteger::class -> BigInteger.valueOf(buildDummy(Long::class))
         kClass == BigDecimal::class -> BigDecimal.valueOf(buildDummy(Long::class))
         kClass == LocalDate::class -> if (randomize) LocalDate.ofEpochDay(nextLong(ChronoField.EPOCH_DAY)) else LocalDate.ofEpochDay(0)

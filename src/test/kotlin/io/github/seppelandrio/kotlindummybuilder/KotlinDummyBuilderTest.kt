@@ -27,6 +27,8 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class KotlinDummyBuilderTest {
+    private val stringDefaultValue = "default"
+
     @TestFactory
     fun `should support`(): List<DynamicTest> = listOf(
         // region simple types
@@ -38,7 +40,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("Float", 0.0f),
         *TestCases.defaultAndRandom("Double", 0.0),
         *TestCases.defaultAndRandom("Char", 'a'),
-        *TestCases.defaultAndRandom("String", ""),
+        *TestCases.defaultAndRandom("String", stringDefaultValue),
         *TestCases.defaultAndRandom("BigInteger", BigInteger.ZERO),
         *TestCases.defaultAndRandom("BigDecimal", BigDecimal.ZERO),
         *TestCases.defaultAndRandom("LocalDate", LocalDate.parse("1970-01-01")),
@@ -109,16 +111,16 @@ class KotlinDummyBuilderTest {
         // region functions
         *TestCases.alwaysDefault("lambda () -> Unit", Unit, { default<() -> Unit>()() }, { random<() -> Unit>()() }),
         *TestCases.alwaysDefault("function () -> Unit", Unit, { default<Function0<Unit>>()() }, { random<Function0<Unit>>()() }),
-        *TestCases.defaultAndRandom("lambda () -> String", "", { default<() -> String>()() }, { random<() -> String>()() }),
-        *TestCases.defaultAndRandom("function () -> String", "", { default<Function0<String>>()() }, { random<Function0<String>>()() }),
-        *TestCases.defaultAndRandom("lambda () -> String?", "", { default<() -> String?>()()!! }, { random<() -> String?>()()!! }),
-        *TestCases.defaultAndRandom("function () -> String?", "", { default<Function0<String?>>()()!! }, { random<Function0<String?>>()()!! }),
+        *TestCases.defaultAndRandom("lambda () -> String", stringDefaultValue, { default<() -> String>()() }, { random<() -> String>()() }),
+        *TestCases.defaultAndRandom("function () -> String", stringDefaultValue, { default<Function0<String>>()() }, { random<Function0<String>>()() }),
+        *TestCases.defaultAndRandom("lambda () -> String?", stringDefaultValue, { default<() -> String?>()()!! }, { random<() -> String?>()()!! }),
+        *TestCases.defaultAndRandom("function () -> String?", stringDefaultValue, { default<Function0<String?>>()()!! }, { random<Function0<String?>>()()!! }),
         *TestCases.alwaysDefault("lambda (String) -> Unit", Unit, { default<(String) -> Unit>()("input") }, { random<(String) -> Unit>()("input") }),
         *TestCases.alwaysDefault("function (String) -> Unit", Unit, { default<Function1<String, Unit>>()("input") }, { random<Function1<String, Unit>>()("input") }),
-        *TestCases.defaultAndRandom("lambda (String) -> String", "", { default<(String) -> String>()("input") }, { random<(String) -> String>()("input") }),
-        *TestCases.defaultAndRandom("function (String) -> String", "", { default<Function1<String, String>>()("input") }, { random<Function1<String, String>>()("input") }),
-        *TestCases.defaultAndRandom("lambda (String) -> String?", "", { default<(String) -> String?>()("input")!! }, { random<(String) -> String?>()("input")!! }),
-        *TestCases.defaultAndRandom("function (String) -> String?", "", { default<Function1<String, String?>>()("input")!! }, { random<Function1<String, String?>>()("input")!! }),
+        *TestCases.defaultAndRandom("lambda (String) -> String", stringDefaultValue, { default<(String) -> String>()("input") }, { random<(String) -> String>()("input") }),
+        *TestCases.defaultAndRandom("function (String) -> String", stringDefaultValue, { default<Function1<String, String>>()("input") }, { random<Function1<String, String>>()("input") }),
+        *TestCases.defaultAndRandom("lambda (String) -> String?", stringDefaultValue, { default<(String) -> String?>()("input")!! }, { random<(String) -> String?>()("input")!! }),
+        *TestCases.defaultAndRandom("function (String) -> String?", stringDefaultValue, { default<Function1<String, String?>>()("input")!! }, { random<Function1<String, String?>>()("input")!! }),
         *TestCases.alwaysDefault("lambda (String, Int?) -> Unit", Unit, { default<(String, Int?) -> Unit>()("input", null) }, { random<(String, Int?) -> Unit>()("input", null) }),
         *TestCases.alwaysDefault(
             typeDescription = "function (String, Int?) -> Unit",
@@ -126,16 +128,23 @@ class KotlinDummyBuilderTest {
             buildDefaultDummy = { default<Function2<String, Int?, Unit>>()("input", null) },
             buildRandomDummy = { random<Function2<String, Int?, Unit>>()("input", null) },
         ),
-        *TestCases.defaultAndRandom("lambda (String, Int?) -> String", "", { default<(String, Int?) -> String>()("input", null) }, { random<(String, Int?) -> String>()("input", null) }),
+        *TestCases.defaultAndRandom("lambda (String, Int?) -> String", stringDefaultValue, {
+            default<
+                (
+                    String,
+                    Int?,
+                ) -> String,
+            >()("input", null)
+        }, { random<(String, Int?) -> String>()("input", null) }),
         *TestCases.defaultAndRandom(
             typeDescription = "function (String, Int?) -> String",
-            expectedDefaultValue = "",
+            expectedDefaultValue = stringDefaultValue,
             buildDefaultDummy = { default<Function2<String, Int?, String>>()("input", null) },
             buildRandomDummy = { random<Function2<String, Int?, String>>()("input", null) },
         ),
         *TestCases.defaultAndRandom(
             typeDescription = "lambda (String, Int?) -> String?",
-            expectedDefaultValue = "",
+            expectedDefaultValue = stringDefaultValue,
             buildDefaultDummy = {
                 default<
                     (
@@ -148,26 +157,31 @@ class KotlinDummyBuilderTest {
         ),
         *TestCases.defaultAndRandom(
             typeDescription = "function (String, Int?) -> String?",
-            expectedDefaultValue = "",
+            expectedDefaultValue = stringDefaultValue,
             buildDefaultDummy = { default<Function2<String, Int?, String?>>()("input", null)!! },
             buildRandomDummy = { random<Function2<String, Int?, String?>>()("input", null)!! },
         ),
         // endregion
         // region complex objects
-        *TestCases.defaultAndRandom("ValueClass", ValueClass("")),
-        *TestCases.defaultAndRandom("Clazz", Clazz("", null, Clazz.Nested(""))),
-        *TestCases.defaultAndRandom("DataClass", DataClass("", null, DataClass.Nested(false))),
+        *TestCases.defaultAndRandom("ValueClass", ValueClass(stringDefaultValue)),
+        *TestCases.defaultAndRandom("Clazz", Clazz(stringDefaultValue, null, Clazz.Nested(stringDefaultValue))),
+        *TestCases.defaultAndRandom("DataClass", DataClass(stringDefaultValue, null, DataClass.Nested(false))),
         *TestCases.defaultAndRandom("GenericClass", GenericClass(0, GenericClass.Nested(0))),
-        *TestCases.defaultAndRandom("ClassWithPrivateConstructor", "", { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
-        *TestCases.defaultAndRandom("ClassWithPrivateConstructorAndCompanion", "_companion", { default<ClassWithPrivateConstructorAndCompanion>().s }, { random<ClassWithPrivateConstructor>().s }),
+        *TestCases.defaultAndRandom("ClassWithPrivateConstructor", stringDefaultValue, { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
+        *TestCases.defaultAndRandom(
+            "ClassWithPrivateConstructorAndCompanion",
+            "default_companion",
+            { default<ClassWithPrivateConstructorAndCompanion>().s },
+            { random<ClassWithPrivateConstructor>().s },
+        ),
         *TestCases.defaultAndRandom("ClassWithInvariantThatCanBeConstructed", "0", { default<ClassWithInvariantThatCanBeConstructed>().s }, { random<ClassWithInvariantThatCanBeConstructed>().s }),
         *TestCases.alwaysDefault("Object", Object),
         // endregion
         // region abstract types
-        *TestCases.defaultAndRandom("Interface", Interface.Impl1(s = "")),
-        *TestCases.defaultAndRandom("SealedInterface", SealedInterface.Impl1(s = "")),
-        *TestCases.defaultAndRandom("AbstractClass", AbstractClass.Impl1(s = "")),
-        *TestCases.defaultAndRandom("SealedClass", SealedClass.Impl1(s = "")),
+        *TestCases.defaultAndRandom("Interface", Interface.Impl1(s = stringDefaultValue)),
+        *TestCases.defaultAndRandom("SealedInterface", SealedInterface.Impl1(s = stringDefaultValue)),
+        *TestCases.defaultAndRandom("AbstractClass", AbstractClass.Impl1(s = stringDefaultValue)),
+        *TestCases.defaultAndRandom("SealedClass", SealedClass.Impl1(s = stringDefaultValue)),
         // endregion
     )
 
@@ -180,8 +194,8 @@ class KotlinDummyBuilderTest {
                 Failed to create test instance for type class io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed.
 
                 The following functions have been tried:
-                - fun `<init>`(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
-                - fun io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed.Companion.of(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed$Companion@23382f76, ""]: java.lang.IllegalArgumentException("String should have more than 0 characters")
+                - fun `<init>`(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters ["default"]: java.lang.IllegalArgumentException("s should not be default")
+                - fun io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed.Companion.of(kotlin.String): io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest.ClassWithInvariantThatCannotBeConstructed with parameters [io.github.seppelandrio.kotlindummybuilder.KotlinDummyBuilderTest$ClassWithInvariantThatCannotBeConstructed$Companion@23382f76, "default"]: java.lang.IllegalArgumentException("s should not be default")
             """.trimIndent().replaceObjectReferences(),
             exception.message?.replaceObjectReferences(),
         )
@@ -219,7 +233,7 @@ class KotlinDummyBuilderTest {
                 )
 
                 assertEquals("overwritten", d.s)
-                assertEquals("", d.n.s)
+                assertEquals(stringDefaultValue, d.n.s)
             }
 
             @Test
@@ -393,7 +407,7 @@ class KotlinDummyBuilderTest {
 
     class ClassWithInvariantThatCannotBeConstructed(s: String) {
         init {
-            require(s.isNotEmpty()) { "String should have more than 0 characters" }
+            require(s != "default") { "s should not be default" }
         }
 
         companion object {
