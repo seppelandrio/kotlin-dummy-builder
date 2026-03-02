@@ -167,6 +167,7 @@ class KotlinDummyBuilderTest {
         *TestCases.defaultAndRandom("Clazz", Clazz(stringDefaultValue, null, Clazz.Nested(stringDefaultValue))),
         *TestCases.defaultAndRandom("DataClass", DataClass(stringDefaultValue, null, DataClass.Nested(false))),
         *TestCases.defaultAndRandom("GenericClass", GenericClass(0, GenericClass.Nested(0))),
+        *TestCases.defaultAndRandom("ClassWithVarargConstructor", ClassWithVarargConstructor()),
         *TestCases.defaultAndRandom("ClassWithPrivateConstructor", stringDefaultValue, { default<ClassWithPrivateConstructor>().s }, { random<ClassWithPrivateConstructor>().s }),
         *TestCases.defaultAndRandom(
             "ClassWithPrivateConstructorAndCompanion",
@@ -368,6 +369,12 @@ class KotlinDummyBuilderTest {
         val n: DataClass.Nested,
     ) {
         data class Nested(val b: Boolean)
+    }
+
+    class ClassWithVarargConstructor(vararg val strings: String) {
+        override fun equals(other: Any?) = other is ClassWithVarargConstructor && strings.contentEquals(other.strings)
+
+        override fun hashCode() = strings.contentHashCode()
     }
 
     class ClassWithPrivateConstructor private constructor(val s: String) {
