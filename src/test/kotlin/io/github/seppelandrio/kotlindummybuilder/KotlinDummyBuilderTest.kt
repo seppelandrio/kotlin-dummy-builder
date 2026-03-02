@@ -174,7 +174,7 @@ class KotlinDummyBuilderTest {
             { default<ClassWithPrivateConstructorAndCompanion>().s },
             { random<ClassWithPrivateConstructor>().s },
         ),
-        *TestCases.defaultAndRandom("ClassWithInvariantThatCanBeConstructed", "0", { default<ClassWithInvariantThatCanBeConstructed>().s }, { random<ClassWithInvariantThatCanBeConstructed>().s }),
+        *TestCases.defaultAndRandom("ClassWithInvariantThatCanBeConstructed", "0", { default<ClassWithInvariantThatCanBeConstructed>().s!! }, { random<ClassWithInvariantThatCanBeConstructed>().s!! }),
         *TestCases.alwaysDefault("Object", Object),
         // endregion
         // region abstract types
@@ -395,9 +395,9 @@ class KotlinDummyBuilderTest {
         data class Nested<V>(val v: V)
     }
 
-    class ClassWithInvariantThatCanBeConstructed(val s: String) {
+    class ClassWithInvariantThatCanBeConstructed(val s: String?) {
         init {
-            require(s.toIntOrNull() != null) { "String should be an Int" }
+            require(s?.toIntOrNull() != null) { "String should be an Int" }
         }
 
         companion object {
