@@ -54,7 +54,7 @@ internal fun <T : Any> KClass<T>.createObject(
     val typeParameters = resolveTypeParameters(this, type.arguments)
     val failedCreatorCalls = mutableListOf<Pair<String, Throwable>>()
     return prioritizedCreatorFunctions.firstNotNullOfOrNull { creatorFunction ->
-        val parameters = creatorFunction.parameters.map { parameter ->
+        val parameters: List<Any?> = creatorFunction.parameters.map { parameter ->
             argumentOverwrites[parameter.name] ?: buildDummy(parameter.type.resolvedType(typeParameters), randomize, packageNameForChildClassLookup, typeOverwrites)
         }
 
