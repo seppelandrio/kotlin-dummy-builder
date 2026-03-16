@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 kotlinter = "5.4.2"
 jupiter = "6.0.3"
 jvm = "17"
