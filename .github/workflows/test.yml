@@ -28,7 +28,7 @@ jobs:
       - name: Test
         run: ./gradlew lintKotlin test --no-daemon
       - name: Create Test Report
-        uses: ctrf-io/github-test-reporter@024bc4b64d997ca9da86833c6b9548c55c620e40 # v1
+        uses: ctrf-io/github-test-reporter@31e2a2735dd4641c65c2f49eb07e93ce8ec37fff # v1
         if: ${{ !cancelled() }}
         with:
           report-path: ./**/test-results/**/*.xml
