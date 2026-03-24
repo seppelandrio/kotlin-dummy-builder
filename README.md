@@ -17,9 +17,9 @@ All you need to get started is to add a dependency to `Kotlin Dummy Builder` in 
 
 | Approach   | Instruction                                                                                                                                                                                |
 |------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Gradle     | `testImplementation "io.github.seppelandrio:kotlin-dummy-builder:x.y.z"`                                                                                                                   |
-| Gradle Kts | `testImplementation("io.github.seppelandrio:kotlin-dummy-builder:x.y.z")`                                                                                                                  |
-| Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
+| Gradle     | `testImplementation "io.github.seppelandrio.kotlindummybuilder:kotlin-dummy-builder:x.y.z"`                                                                                                |
+| Gradle Kts | `testImplementation("io.github.seppelandrio.kotlindummybuilder:kotlin-dummy-builder:x.y.z")`                                                                                                                  |
+| Maven      | `<dependency>`<br>`<groupId>io.github.seppelandrio.kotlindummybuilder</groupId>`<br>`<artifactId>kotlin-dummy-builder</artifactId>`<br>`<version>x.y.z</version>`<br>`<scope>test</scope>`<br>`</dependency>` |
 
 > [!IMPORTANT]
 > Since this library makes extensive use of `kotlin-reflect`, and many related issues are resolved with each new Kotlin language release,
