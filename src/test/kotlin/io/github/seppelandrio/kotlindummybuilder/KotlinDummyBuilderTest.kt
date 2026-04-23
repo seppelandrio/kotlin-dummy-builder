@@ -460,4 +460,4 @@ class KotlinDummyBuilderTest {
     // endregion
 }
 
-private fun String.replaceObjectReferences(): String = replace(Regex("@\\w{8}"), "@00000000")
+private fun String.replaceObjectReferences(): String = replace(Regex("@\\w{7,8}"), "@00000000")
