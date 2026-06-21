@@ -3,7 +3,7 @@ kotlin = "2.4.0"
 kotlinter = "5.5.0"
 jupiter = "6.1.0"
 jvm = "17"
-maven-publish = "0.36.0"
+maven-publish = "0.37.0"
 
 [libraries]
 jupiter-junitJupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "jupiter" }
