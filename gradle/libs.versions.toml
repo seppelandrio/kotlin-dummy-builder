@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.4.0"
 kotlinter = "5.5.0"
-jupiter = "6.1.0"
+jupiter = "6.1.1"
 jvm = "17"
 maven-publish = "0.37.0"
 
